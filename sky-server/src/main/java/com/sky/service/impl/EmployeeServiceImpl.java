@@ -1,17 +1,25 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import com.sky.vo.PageBeanVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -52,6 +60,39 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3、返回实体对象
         return employee;
+    }
+
+    //分页查询
+    @Override
+    public PageResult findEmpByPage(String name, Integer page, Integer pageSize) {
+        // 设置当前页和 记录数  [PageHelper]
+        PageHelper.startPage(page, pageSize);
+        // 根据条件查询数据
+        List<Employee> employeeList = employeeMapper.findEmpByPage(name);
+        // 插件会帮我们把数据封装到一个Page对象中
+        Page<Employee> p = (Page<Employee>) employeeList;
+        // 从Page[也是属于分页插件的类]对象中获取 总条数 以及 分页数据,把数据封装到PageBean里面 ，返回即可
+        return new PageResult(p.getTotal(), p.getResult());
+    }
+
+    //添加员工
+    @Override
+    public void addEmp(EmployeeDTO employeeDTO) {
+        String name = employeeDTO.getName();
+        String username = employeeDTO.getUsername();
+        String phone = employeeDTO.getPhone();
+        String sex = employeeDTO.getSex();
+        String idNumber = employeeDTO.getIdNumber();
+        Employee e = new Employee(null, username, name, "123456", phone, sex, idNumber, 1, LocalDateTime.now(),
+                LocalDateTime.now(), null, null);
+        employeeMapper.addEmp(e);
+
+    }
+
+    @Override
+    public void changeStatus(Integer id, String status) {
+        employeeMapper.changeStatus(id, Integer.parseInt(status));
+
     }
 
 }

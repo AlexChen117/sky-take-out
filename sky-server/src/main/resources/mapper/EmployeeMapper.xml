@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.EmployeeMapper">
+    <insert id="addEmp">
+        insert into sky_take_out.employee
+        values (null, #{name}, #{username}, #{password}, #{phone},
+                #{sex}, #{idNumber}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+
+    </insert>
+    <select id="findEmpByPage" resultType="com.sky.entity.Employee">
+        select *
+        from sky_take_out.employee
+        <where>
+            <if test="name != null">
+                name like concat('%' , #{name} , '%')
+            </if>
+        </where>
+    </select>
 </mapper>

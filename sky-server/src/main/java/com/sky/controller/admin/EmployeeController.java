@@ -1,19 +1,18 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,5 +69,33 @@ public class EmployeeController {
     public Result<String> logout() {
         return Result.success();
     }
+
+
+    //分页查询
+    @GetMapping("/page")
+    public Result<PageResult> findEmpByPage(String name,
+                                            @RequestParam(defaultValue = "1") Integer page,
+                                            @RequestParam(defaultValue = "10") Integer pageSize) {
+        log.info("分页查询");
+        PageResult ps = employeeService.findEmpByPage(name, page, pageSize);
+        return Result.success(ps);
+    }
+
+    @PostMapping
+    public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("添加员工");
+        System.out.println(employeeDTO);
+        employeeService.addEmp(employeeDTO);
+        return Result.success("添加成功!");
+    }
+
+    @PostMapping("/status/{status}")
+    public Result changeStatus(Integer id, @PathVariable String status) {
+        log.info("启用、禁用员工账号");
+        employeeService.changeStatus(id, status);
+        return Result.success();
+    }
+
+
 
 }
