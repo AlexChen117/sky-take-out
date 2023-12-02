@@ -95,8 +95,7 @@ public class EmployeeController {
      */
     @PostMapping
     public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
-        log.info("添加员工");
-        System.out.println(employeeDTO);
+        log.info("添加员工:{}",employeeDTO);
         employeeService.addEmp(employeeDTO);
         return Result.success("添加成功!");
     }

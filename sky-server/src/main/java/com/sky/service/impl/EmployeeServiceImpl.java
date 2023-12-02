@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
@@ -13,6 +14,7 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -62,7 +64,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    //分页查询
+    /**
+     * 分页查询
+     *
+     * @param name
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @Override
     public PageResult findEmpByPage(String name, Integer page, Integer pageSize) {
         // 设置当前页和 记录数  [PageHelper]
@@ -75,20 +84,35 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(p.getTotal(), p.getResult());
     }
 
-    //添加员工
+    /**
+     * 添加员工
+     *
+     * @param employeeDTO
+     */
     @Override
     public void addEmp(EmployeeDTO employeeDTO) {
-        String name = employeeDTO.getName();
-        String username = employeeDTO.getUsername();
-        String phone = employeeDTO.getPhone();
-        String sex = employeeDTO.getSex();
-        String idNumber = employeeDTO.getIdNumber();
-        Employee e = new Employee(null, username, name, "123456", phone, sex, idNumber, 1, LocalDateTime.now(),
-                LocalDateTime.now(), null, null);
+        Employee e = new Employee();
+        //属性拷贝
+        BeanUtils.copyProperties(employeeDTO, e);
+        e.setCreateTime(LocalDateTime.now());
+        e.setUpdateTime(LocalDateTime.now());
+        //常量设定员工初始状态
+        e.setStatus(StatusConstant.ENABLE);
+        //默认密码MD5加密,默认密码常量使用
+        e.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        e.setCreateUser(10L);
+        e.setUpdateUser(10L);
+
         employeeMapper.addEmp(e);
 
     }
 
+    /**
+     * 启用、禁用员工账号
+     *
+     * @param id
+     * @param status
+     */
     @Override
     public void changeStatus(Integer id, String status) {
         employeeMapper.changeStatus(id, Integer.parseInt(status));
