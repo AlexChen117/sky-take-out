@@ -4,7 +4,6 @@ import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.result.PageResult;
-import com.sky.vo.PageBeanVO;
 
 public interface EmployeeService {
 

@@ -10,6 +10,7 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
+@Api(tags = "员工管理")
 public class EmployeeController {
 
     @Autowired
@@ -70,8 +72,13 @@ public class EmployeeController {
         return Result.success();
     }
 
-
-    //分页查询
+    /**
+     * 分页查询
+     * @param name
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/page")
     public Result<PageResult> findEmpByPage(String name,
                                             @RequestParam(defaultValue = "1") Integer page,
@@ -81,6 +88,11 @@ public class EmployeeController {
         return Result.success(ps);
     }
 
+    /**
+     * 添加员工
+     * @param employeeDTO
+     * @return
+     */
     @PostMapping
     public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
         log.info("添加员工");
@@ -89,13 +101,18 @@ public class EmployeeController {
         return Result.success("添加成功!");
     }
 
+    /**
+     * 启用、禁用员工账号
+     * @param id
+     * @param status
+     * @return
+     */
     @PostMapping("/status/{status}")
     public Result changeStatus(Integer id, @PathVariable String status) {
         log.info("启用、禁用员工账号");
         employeeService.changeStatus(id, status);
         return Result.success();
     }
-
 
 
 }
