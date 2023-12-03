@@ -6,6 +6,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.exception.CategoryException;
 import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
@@ -52,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void update(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
+        checkName(category);
         category.setUpdateUser(BaseContext.getCurrentId());
         category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
@@ -72,6 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.update(category);
     }
 
+
     /**
      * 添加分类
      *
@@ -81,6 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void add(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
+        checkName(category);
         category.setCreateTime(LocalDateTime.now());
         category.setCreateUser(BaseContext.getCurrentId());
         category.setUpdateTime(LocalDateTime.now());
@@ -96,5 +100,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Integer id) {
         categoryMapper.delete(id);
+    }
+
+    /**
+     * 校验菜名
+     *
+     * @param category
+     */
+    private void checkName(Category category) {
+        int count = categoryMapper.findCategoryByName(category.getName());
+        if (count > 0) {
+            throw new CategoryException("菜品名重复,请检查!");
+        }
     }
 }

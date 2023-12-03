@@ -29,4 +29,7 @@ public interface CategoryMapper {
 
     @Delete("delete from category where id = #{id}")
     void delete(Integer id);
+
+    @Select("select count(*) from category where name = #{name}")
+    int findCategoryByName(String name);
 }
