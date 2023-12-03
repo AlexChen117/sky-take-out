@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.entity.Category;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -23,4 +24,9 @@ public interface CategoryMapper {
 
     @Select("select * from  category where id = #{id}")
     Category findCategoryById(Integer id);
+
+    void add(Category category);
+
+    @Delete("delete from category where id = #{id}")
+    void delete(Integer id);
 }

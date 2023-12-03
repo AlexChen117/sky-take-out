@@ -65,9 +65,30 @@ public class CategoryController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation(value = "启用、禁用分类")
-    public Result<?> changeStatus(@PathVariable Integer status,Integer id) {
+    public Result<?> changeStatus(@PathVariable Integer status, Integer id) {
         log.info("启用、禁用分类");
-        categoryService.changeStatus(status,id);
+        categoryService.changeStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 新增分类
+     *
+     * @return
+     */
+    @PostMapping
+    @ApiOperation(value = "新增分类")
+    public Result<?> add(@RequestBody CategoryDTO categoryDTO) {
+        log.info("新增分类");
+        categoryService.add(categoryDTO);
+        return Result.success();
+    }
+
+    @DeleteMapping
+    @ApiOperation(value = "删除分类")
+    public Result<?> delete(Integer id) {
+        log.info("删除分类");
+        categoryService.delete(id);
         return Result.success();
     }
 

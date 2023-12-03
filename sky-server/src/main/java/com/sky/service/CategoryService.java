@@ -18,4 +18,8 @@ public interface CategoryService {
     void update(CategoryDTO categoryDTO);
 
     void changeStatus(Integer status,Integer id);
+
+    void add(CategoryDTO categoryDTO);
+
+    void delete(Integer id);
 }
