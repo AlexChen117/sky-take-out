@@ -70,6 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询
+     *
      * @param employeePageQueryDTO
      * @return
      */
@@ -120,8 +121,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param status
      */
     @Override
-    public void changeStatus(Integer id, String status) {
-        employeeMapper.changeStatus(id, Integer.parseInt(status));
+    public void changeStatus(Long id, Integer status) {
+        employeeMapper.changeStatus(id, status);
     }
 
     /**

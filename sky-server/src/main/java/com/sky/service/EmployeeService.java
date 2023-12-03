@@ -19,5 +19,5 @@ public interface EmployeeService {
 
     void addEmp(EmployeeDTO employeeDTO);
 
-    void changeStatus(Integer id, String status);
+    void changeStatus(Long id, Integer status);
 }

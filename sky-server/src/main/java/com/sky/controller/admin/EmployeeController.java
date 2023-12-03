@@ -113,7 +113,7 @@ public class EmployeeController {
      */
     @ApiOperation(value = "启用、禁用员工账号")
     @PostMapping("/status/{status}")
-    public Result<?> changeStatus(Integer id, @PathVariable String status) {
+    public Result<?> changeStatus(Long id, @PathVariable Integer status) {
         log.info("启用、禁用员工账号");
         employeeService.changeStatus(id, status);
         return Result.success();
