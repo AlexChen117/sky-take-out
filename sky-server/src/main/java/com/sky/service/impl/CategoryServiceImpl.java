@@ -99,7 +99,14 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void delete(Integer id) {
-        categoryMapper.delete(id);
+        int count = categoryMapper.countDishByCategoryId(id);
+        if (count >0) {
+            throw new CategoryException("分类下有产品,不可删除!");
+        }
+        else{
+            categoryMapper.delete(id);
+        }
+
     }
 
     /**

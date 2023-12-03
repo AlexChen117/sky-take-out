@@ -32,4 +32,7 @@ public interface CategoryMapper {
 
     @Select("select count(*) from category where name = #{name}")
     int findCategoryByName(String name);
+
+    @Select("select count(*) from dish where category_id=#{id}")
+    int countDishByCategoryId(Integer id);
 }
