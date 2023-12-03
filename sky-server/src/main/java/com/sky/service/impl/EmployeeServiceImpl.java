@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
@@ -10,15 +11,20 @@ import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import com.sky.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +34,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private JwtProperties jwtProperties;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+
 
     /**
      * 员工登录
@@ -105,7 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String phone = employeeDTO.getPhone();
         Pattern patternPhone = Pattern.compile("^1[3456789]\\d{9}$");
         Matcher matcherPhone = patternPhone.matcher(phone);
-        if (Objects.isNull(phone) || phone.length() != 11|| !matcherPhone.matches()) {
+        if (Objects.isNull(phone) || phone.length() != 11 || !matcherPhone.matches()) {
             throw new PhoneException("请输入正确的手机号");
         }
         //身份证号校验
@@ -125,9 +136,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         e.setStatus(StatusConstant.ENABLE);
         //默认密码MD5加密,默认密码常量使用
         e.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
-        e.setCreateUser(10L);
-        e.setUpdateUser(10L);
-
+        //获取请求头里的token,然后解析id
+        String token = httpServletRequest.getHeader(jwtProperties.getAdminTokenName());
+        Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
+        Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
+        e.setCreateUser(empId);
+        e.setUpdateUser(empId);
         employeeMapper.addEmp(e);
 
     }
