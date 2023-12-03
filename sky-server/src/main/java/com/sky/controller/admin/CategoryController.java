@@ -84,6 +84,12 @@ public class CategoryController {
         return Result.success();
     }
 
+    /**
+     * 删除分类
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping
     @ApiOperation(value = "删除分类")
     public Result<?> delete(Integer id) {

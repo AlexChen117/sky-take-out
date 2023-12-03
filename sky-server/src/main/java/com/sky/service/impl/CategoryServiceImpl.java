@@ -29,6 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    /**
+     * 分页查询
+     *
+     * @param categoryPageQueryDTO
+     * @return
+     */
     @Override
     public PageResult page(CategoryPageQueryDTO categoryPageQueryDTO) {
         PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
@@ -37,6 +43,11 @@ public class CategoryServiceImpl implements CategoryService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 修改
+     *
+     * @param categoryDTO
+     */
     @Override
     public void update(CategoryDTO categoryDTO) {
         Category category = new Category();
@@ -46,19 +57,30 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.update(category);
     }
 
+    /**
+     * 修改状态
+     *
+     * @param status
+     * @param id
+     */
     @Override
-    public void changeStatus(Integer status,Integer id) {
-        Category category =categoryMapper.findCategoryById(id);
+    public void changeStatus(Integer status, Integer id) {
+        Category category = categoryMapper.findCategoryById(id);
         category.setStatus(status);
         category.setUpdateUser(BaseContext.getCurrentId());
         category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
     }
 
+    /**
+     * 添加分类
+     *
+     * @param categoryDTO
+     */
     @Override
     public void add(CategoryDTO categoryDTO) {
         Category category = new Category();
-        BeanUtils.copyProperties(categoryDTO,category);
+        BeanUtils.copyProperties(categoryDTO, category);
         category.setCreateTime(LocalDateTime.now());
         category.setCreateUser(BaseContext.getCurrentId());
         category.setUpdateTime(LocalDateTime.now());
@@ -66,6 +88,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.add(category);
     }
 
+    /**
+     * 删除分类
+     *
+     * @param id
+     */
     @Override
     public void delete(Integer id) {
         categoryMapper.delete(id);
