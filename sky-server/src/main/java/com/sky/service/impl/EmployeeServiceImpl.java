@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.aliyun.oss.ServiceException;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
@@ -9,6 +10,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
@@ -156,6 +158,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         e.setUpdateTime(LocalDateTime.now());
         e.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.updateById(e);
+
+    }
+
+    @Override
+    public void updatePwd(PasswordEditDTO editDTO) {
+        Employee emp = employeeMapper.findEmpById(BaseContext.getCurrentId());
+        if (emp.getPassword().equals(DigestUtils.md5DigestAsHex(editDTO.getOldPassword().getBytes()))) {
+            emp.setPassword(DigestUtils.md5DigestAsHex(editDTO.getNewPassword().getBytes()));
+            employeeMapper.updateById(emp);
+        } else {
+            throw new PasswordErrorException("旧密码输入错误!");
+        }
+
 
     }
 
