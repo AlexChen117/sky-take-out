@@ -8,6 +8,7 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
@@ -69,18 +70,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询
-     *
-     * @param name
-     * @param page
-     * @param pageSize
+     * @param employeePageQueryDTO
      * @return
      */
     @Override
-    public PageResult findEmpByPage(String name, Integer page, Integer pageSize) {
+    public PageResult findEmpByPage(EmployeePageQueryDTO employeePageQueryDTO) {
         // 设置当前页和 记录数  [PageHelper]
-        PageHelper.startPage(page, pageSize);
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
         // 根据条件查询数据
-        List<Employee> employeeList = employeeMapper.findEmpByPage(name);
+        Employee employeeQuery = new Employee();
+        employeeQuery.setName(employeePageQueryDTO.getName());
+        List<Employee> employeeList = employeeMapper.findEmpByPage(employeeQuery);
         // 插件会帮我们把数据封装到一个Page对象中
         Page<Employee> p = (Page<Employee>) employeeList;
         // 从Page[也是属于分页插件的类]对象中获取 总条数 以及 分页数据,把数据封装到PageBean里面 ，返回即可

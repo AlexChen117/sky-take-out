@@ -20,7 +20,7 @@ public interface EmployeeMapper {
     Employee getByUsername(String username);
 
 
-    List<Employee> findEmpByPage(String name);
+    List<Employee> findEmpByPage(Employee employeeQuery);
 
 
     void addEmp(Employee e);

@@ -10,12 +10,14 @@
     </insert>
 
     <select id="findEmpByPage" resultType="com.sky.entity.Employee">
-        select *
+        select id, name, username, password, phone, sex, id_number, status, create_time, update_time, create_user,
+        update_user
         from sky_take_out.employee
         <where>
             <if test="name != null">
                 name like concat('%' , #{name} , '%')
             </if>
         </where>
+        order by create_time desc
     </select>
 </mapper>
