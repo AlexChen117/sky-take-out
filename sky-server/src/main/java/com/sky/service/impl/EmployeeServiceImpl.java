@@ -130,11 +130,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.updateById(employee);
     }
 
+    /**
+     * 信息回显
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Employee getEmp(Long id) {
         Employee empById = employeeMapper.findEmpById(id);
         empById.setPassword(null);
         return empById;
+    }
+
+    /**
+     * 更新员工信息
+     *
+     * @param employeeDTO
+     */
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        checkInfo(employeeDTO);
+        Employee e = new Employee();
+        BeanUtils.copyProperties(employeeDTO, e);
+        e.setUpdateTime(LocalDateTime.now());
+        e.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.updateById(e);
+
     }
 
     /**
@@ -148,10 +170,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (Objects.isNull(username) || username.length() < 3 || username.length() > 120) {
             throw new AccountException("账号输入错误,请输入3-20字符");
         }
-        int count = employeeMapper.selectCountByUsername(username);
+        //id校验
+        int count;
+        if (Objects.isNull(employeeDTO.getId())) {
+            count = employeeMapper.selectCountByUsername(username);
+        } else {
+            count = employeeMapper.selectCountByUsernameAndNotId(username, employeeDTO.getId());
+        }
         if (count > 0) {
             throw new AccountException("账号已存在,请重新输入");
         }
+
         //手机号校验
         String phone = employeeDTO.getPhone();
         Pattern patternPhone = Pattern.compile("^1[3456789]\\d{9}$");
