@@ -8,9 +8,7 @@ import com.sky.constant.StatusConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
-import com.sky.exception.AccountLockedException;
-import com.sky.exception.AccountNotFoundException;
-import com.sky.exception.PasswordErrorException;
+import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
@@ -21,6 +19,9 @@ import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -91,6 +92,30 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void addEmp(EmployeeDTO employeeDTO) {
+        //用户名校验
+        String username = employeeDTO.getUsername();
+        if (Objects.isNull(username) || username.length() < 3 || username.length() > 120) {
+            throw new AccountException("账号输入错误,请输入3-20字符");
+        }
+        int count = employeeMapper.selectCountByUsername(username);
+        if (count > 0) {
+            throw new AccountException("账号已存在,请重新输入");
+        }
+        //手机号校验
+        String phone = employeeDTO.getPhone();
+        Pattern patternPhone = Pattern.compile("^1[3456789]\\d{9}$");
+        Matcher matcherPhone = patternPhone.matcher(phone);
+        if (Objects.isNull(phone) || phone.length() != 11|| !matcherPhone.matches()) {
+            throw new PhoneException("请输入正确的手机号");
+        }
+        //身份证号校验
+        String id = employeeDTO.getIdNumber();
+        Pattern patternID = Pattern.compile("^\\d{17}[\\d|X]$");
+        Matcher matcherID = patternID.matcher(id);
+        if (Objects.isNull(id) || id.length() != 18 || !matcherID.matches()) {
+            throw new IDNumberException("请输入正确的身份证号");
+        }
+
         Employee e = new Employee();
         //属性拷贝
         BeanUtils.copyProperties(employeeDTO, e);
@@ -116,7 +141,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void changeStatus(Integer id, String status) {
         employeeMapper.changeStatus(id, Integer.parseInt(status));
-
     }
 
 }

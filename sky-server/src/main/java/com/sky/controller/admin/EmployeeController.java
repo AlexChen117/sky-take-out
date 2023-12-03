@@ -101,7 +101,7 @@ public class EmployeeController {
      */
     @ApiOperation(value = "添加员工")
     @PostMapping
-    public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
+    public Result<?> addEmp(@RequestBody EmployeeDTO employeeDTO) {
         log.info("添加员工:{}", employeeDTO);
         employeeService.addEmp(employeeDTO);
         return Result.success("添加成功!");
@@ -116,11 +116,10 @@ public class EmployeeController {
      */
     @ApiOperation(value = "启用、禁用员工账号")
     @PostMapping("/status/{status}")
-    public Result changeStatus(Integer id, @PathVariable String status) {
+    public Result<?> changeStatus(Integer id, @PathVariable String status) {
         log.info("启用、禁用员工账号");
         employeeService.changeStatus(id, status);
         return Result.success();
     }
-
 
 }

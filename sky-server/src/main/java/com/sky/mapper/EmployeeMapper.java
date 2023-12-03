@@ -28,4 +28,7 @@ public interface EmployeeMapper {
 
     @Update("update employee set status=#{i} where id=#{id}")
     void changeStatus(Integer id, int i);
+
+    @Select("select count(*) from employee where username = #{username}")
+    int selectCountByUsername(String username);
 }
