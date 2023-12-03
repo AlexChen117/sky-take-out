@@ -18,4 +18,6 @@ import java.util.List;
 public interface CategoryMapper {
 
     List<Category> page(String name, Integer type);
+
+    void update(Category category);
 }
