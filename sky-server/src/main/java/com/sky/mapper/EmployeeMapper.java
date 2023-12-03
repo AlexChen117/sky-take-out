@@ -31,4 +31,9 @@ public interface EmployeeMapper {
 
     @Select("select count(*) from employee where username = #{username}")
     int selectCountByUsername(String username);
+
+    void updateById(Employee employee);
+
+    @Select("select id, name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user from employee where id=#{id}")
+    Employee findEmpById(Long id);
 }

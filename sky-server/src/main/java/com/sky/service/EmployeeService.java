@@ -20,4 +20,6 @@ public interface EmployeeService {
     void addEmp(EmployeeDTO employeeDTO);
 
     void changeStatus(Long id, Integer status);
+
+    Employee getEmp(Long id);
 }
