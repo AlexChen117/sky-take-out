@@ -45,4 +45,13 @@ public class CategoryServiceImpl implements CategoryService {
         category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
     }
+
+    @Override
+    public void changeStatus(Integer status,Integer id) {
+        Category category =categoryMapper.findCategoryById(id);
+        category.setStatus(status);
+        category.setUpdateUser(BaseContext.getCurrentId());
+        category.setUpdateTime(LocalDateTime.now());
+        categoryMapper.update(category);
+    }
 }

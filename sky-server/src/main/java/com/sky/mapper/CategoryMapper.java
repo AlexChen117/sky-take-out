@@ -20,4 +20,7 @@ public interface CategoryMapper {
     List<Category> page(String name, Integer type);
 
     void update(Category category);
+
+    @Select("select * from  category where id = #{id}")
+    Category findCategoryById(Integer id);
 }

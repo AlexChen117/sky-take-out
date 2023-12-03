@@ -7,6 +7,7 @@ import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/page")
+    @ApiOperation(value = "分页查询")
     public Result<PageResult> page(CategoryPageQueryDTO categoryPageQueryDTO) {
         log.info("分类分页查询");
         PageResult pageResult = categoryService.page(categoryPageQueryDTO);
@@ -43,13 +45,29 @@ public class CategoryController {
 
     /**
      * 修改分类
+     *
      * @param categoryDTO
      * @return
      */
     @PutMapping
+    @ApiOperation(value = "修改分类")
     public Result<?> update(@RequestBody CategoryDTO categoryDTO) {
         log.info("修改分类");
         categoryService.update(categoryDTO);
+        return Result.success();
+    }
+
+    /**
+     * 启用、禁用分类
+     *
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "启用、禁用分类")
+    public Result<?> changeStatus(@PathVariable Integer status,Integer id) {
+        log.info("启用、禁用分类");
+        categoryService.changeStatus(status,id);
         return Result.success();
     }
 
