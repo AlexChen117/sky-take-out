@@ -5,7 +5,8 @@
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         insert into dish(name, category_id, price, image, description, status, create_time, update_time, create_user,
                          update_user)
-        values (#{name},#{categoryId},#{price},#{image},#{description},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser})
+        values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime},
+                #{createUser}, #{updateUser})
     </insert>
     <select id="selectCount" resultType="java.lang.Integer">
         select count(*)
@@ -15,5 +16,19 @@
                 name = #{name}
             </if>
         </where>
+    </select>
+    <select id="selectPage" resultType="com.sky.entity.Dish">
+        select d.*,c.name categoryName from dish d ,category c
+        where d.category_id = c.id
+        <if test="name != null">
+            and d.name like concat('%',#{name},'%')
+        </if>
+        <if test="categoryId != null">
+            and d.category_id = #{categoryId}
+        </if>
+        <if test="status != null">
+            and d.status = #{status}
+        </if>
+        order by create_time desc
     </select>
 </mapper>

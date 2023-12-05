@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -46,5 +47,7 @@ public class Dish implements Serializable {
     private Long createUser;
 
     private Long updateUser;
+    //分类名称
+    private String categoryName;
 
 }

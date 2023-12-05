@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFillAdd;
 import com.sky.dto.DishDTO;
 import com.sky.entity.Dish;
@@ -19,4 +20,6 @@ public interface DishMapper {
     void add(Dish dish);
 
     Integer selectCount(Dish dishQuery);
+
+    Page<Dish> selectPage(Dish dishQuery);
 }

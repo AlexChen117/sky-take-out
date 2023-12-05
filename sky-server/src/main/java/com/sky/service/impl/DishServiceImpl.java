@@ -1,19 +1,25 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
+import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.exception.DishException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.FlavorMapper;
+import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 菜品管理Service的实现类
@@ -59,5 +65,21 @@ public class DishServiceImpl implements DishService {
             flavorMapper.addBatch(flavors);
         }
 
+    }
+
+    @Override
+    public PageResult page(DishPageQueryDTO dishPageQueryDTO) {
+        PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
+        Dish dishQuery = new Dish();
+        BeanUtils.copyProperties(dishPageQueryDTO, dishQuery);
+        Page<Dish> page = dishMapper.selectPage(dishQuery);
+        //Dish 转换为 DishVO
+        List<DishVO> collect = page.getResult().stream()
+                .map(dish -> {
+                    DishVO dishVO = new DishVO();
+                    BeanUtils.copyProperties(dish, dishVO);
+                    return dishVO;
+                }).collect(Collectors.toList());
+        return new PageResult(page.getTotal(), collect);
     }
 }
