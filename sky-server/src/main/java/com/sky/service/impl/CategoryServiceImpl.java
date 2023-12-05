@@ -109,6 +109,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Override
+    public List<Category> list(String type) {
+        return categoryMapper.list(type);
+    }
+
     /**
      * 校验菜名
      *

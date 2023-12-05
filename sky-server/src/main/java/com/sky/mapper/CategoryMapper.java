@@ -39,4 +39,7 @@ public interface CategoryMapper {
 
     @Select("select count(*) from dish where category_id=#{id}")
     int countDishByCategoryId(Integer id);
+
+    @Select("select * from category where type=#{type}")
+    List<Category> list(String type);
 }
