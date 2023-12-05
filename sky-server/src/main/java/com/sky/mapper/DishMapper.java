@@ -38,6 +38,6 @@ public interface DishMapper {
     @AutoFillUpdate
     void update(Dish dish);
 
-    @Select("select * from dish where id = #{id}")
-    Dish list(Long id);
+    @Select("select * from dish where category_id = #{categoryId}")
+    List<Dish> list(Long categoryId);
 }

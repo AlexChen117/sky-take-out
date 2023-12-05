@@ -29,5 +29,5 @@ public interface DishService {
 
     void statusChange(Integer status,Long id);
 
-    Dish list(Long id);
+    List<Dish> list(Long categoryId);
 }
