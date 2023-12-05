@@ -1,7 +1,7 @@
 package com.sky.aop;
 
 import com.sky.annotation.AutoFillAdd;
-import com.sky.annotation.AutoFillUpdate;
+import com.sky.constant.AutoFillConstant;
 import com.sky.context.BaseContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -46,15 +46,15 @@ public class AutoFill {
             Object param = args[0];
             Class<?> aClass = param.getClass();
             //获得方法
-            Method setUpdateTime = aClass.getMethod("setUpdateTime", LocalDateTime.class);
-            Method setUpdateUser = aClass.getMethod("setUpdateUser", Long.class);
+            Method setUpdateTime = aClass.getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
+            Method setUpdateUser = aClass.getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
             //调用setValue方法
             setUpdateTime.invoke(param, LocalDateTime.now());
             setUpdateUser.invoke(param, BaseContext.getCurrentId());
             //区分未新新增
             if (Objects.nonNull(autoFillAdd)) {
-                Method setCreateTime = aClass.getMethod("setCreateTime", LocalDateTime.class);
-                Method setCreateUser = aClass.getMethod("setCreateUser", Long.class);
+                Method setCreateTime = aClass.getMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
+                Method setCreateUser = aClass.getMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
                 //调用setValue方法
                 setCreateTime.invoke(param, LocalDateTime.now());
                 setCreateUser.invoke(param, BaseContext.getCurrentId());
