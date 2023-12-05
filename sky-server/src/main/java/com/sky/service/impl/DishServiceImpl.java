@@ -162,4 +162,9 @@ public class DishServiceImpl implements DishService {
         BeanUtils.copyProperties(byId, dish);
         dishMapper.update(dish);
     }
+
+    @Override
+    public Dish list(Long id) {
+        return dishMapper.list(id);
+    }
 }
