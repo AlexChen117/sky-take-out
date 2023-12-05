@@ -8,6 +8,12 @@
         values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime},
                 #{createUser}, #{updateUser})
     </insert>
+    <delete id="deleteByIds">
+        delete from dish where id in
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="selectCount" resultType="java.lang.Integer">
         select count(*)
         from dish
@@ -30,5 +36,12 @@
             and d.status = #{status}
         </if>
         order by create_time desc
+    </select>
+    <select id="selectCountByIdsAndStatus" resultType="java.lang.Integer">
+        select count(*) from dish where id in
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+        and status = #{status}
     </select>
 </mapper>

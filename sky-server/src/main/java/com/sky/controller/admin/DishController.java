@@ -7,8 +7,11 @@ import com.sky.result.Result;
 import com.sky.service.DishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 菜品管理
@@ -49,6 +52,18 @@ public class DishController {
         log.info("分页查询");
         PageResult pageResult = dishService.page(dishPageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 批量删除
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public Result<?> delete(@RequestParam List<String> ids) {
+        log.info("批量删除");
+        dishService.delete(ids);
+        return Result.success();
     }
 
 

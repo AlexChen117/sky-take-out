@@ -6,6 +6,8 @@ import com.sky.dto.DishDTO;
 import com.sky.entity.Dish;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 菜品管理Mapper
  *
@@ -22,4 +24,8 @@ public interface DishMapper {
     Integer selectCount(Dish dishQuery);
 
     Page<Dish> selectPage(Dish dishQuery);
+
+    Integer selectCountByIdsAndStatus(List<String> ids, Integer status);
+
+    void deleteByIds(List<String> ids);
 }

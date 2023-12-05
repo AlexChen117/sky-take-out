@@ -7,9 +7,12 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.DishException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.FlavorMapper;
+import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -35,6 +38,7 @@ public class DishServiceImpl implements DishService {
 
     private final DishMapper dishMapper;
     private final FlavorMapper flavorMapper;
+    private final SetmealDishMapper setmealDishMapper;
 
     /**
      * 新增菜品
@@ -67,6 +71,12 @@ public class DishServiceImpl implements DishService {
 
     }
 
+    /**
+     * 分页查询
+     *
+     * @param dishPageQueryDTO
+     * @return
+     */
     @Override
     public PageResult page(DishPageQueryDTO dishPageQueryDTO) {
         PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
@@ -81,5 +91,25 @@ public class DishServiceImpl implements DishService {
                     return dishVO;
                 }).collect(Collectors.toList());
         return new PageResult(page.getTotal(), collect);
+    }
+
+    /**
+     * 删除
+     *
+     * @param ids
+     */
+    @Override
+    public void delete(List<String> ids) {
+        Integer countByIdsAndStatus = dishMapper.selectCountByIdsAndStatus(ids, StatusConstant.ENABLE);
+        if (countByIdsAndStatus > 0) {
+            throw new DeletionNotAllowedException("启售商品无法删除!");
+        }
+        Integer countByDishIds = setmealDishMapper.selectCountByDishIds(ids, StatusConstant.ENABLE);
+        if (countByDishIds > 0) {
+            throw new DeletionNotAllowedException("套餐关联的商品无法删除!");
+        }
+        dishMapper.deleteByIds(ids);
+
+
     }
 }
