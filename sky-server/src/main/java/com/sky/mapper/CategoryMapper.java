@@ -1,5 +1,7 @@
 package com.sky.mapper;
 
+import com.sky.annotation.AutoFillAdd;
+import com.sky.annotation.AutoFillUpdate;
 import com.sky.entity.Category;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,11 +22,13 @@ public interface CategoryMapper {
 
     List<Category> page(String name, Integer type);
 
+    @AutoFillUpdate
     void update(Category category);
 
     @Select("select * from  category where id = #{id}")
     Category findCategoryById(Integer id);
 
+    @AutoFillAdd
     void add(Category category);
 
     @Delete("delete from category where id = #{id}")

@@ -54,8 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
         checkName(category);
-        category.setUpdateUser(BaseContext.getCurrentId());
-        category.setUpdateTime(LocalDateTime.now());
+        //category.setUpdateUser(BaseContext.getCurrentId());
+        //category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
     }
 
@@ -69,8 +69,8 @@ public class CategoryServiceImpl implements CategoryService {
     public void changeStatus(Integer status, Integer id) {
         Category category = categoryMapper.findCategoryById(id);
         category.setStatus(status);
-        category.setUpdateUser(BaseContext.getCurrentId());
-        category.setUpdateTime(LocalDateTime.now());
+        //category.setUpdateUser(BaseContext.getCurrentId());
+        //category.setUpdateTime(LocalDateTime.now());
         categoryMapper.update(category);
     }
 
@@ -85,10 +85,10 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
         checkName(category);
-        category.setCreateTime(LocalDateTime.now());
-        category.setCreateUser(BaseContext.getCurrentId());
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
+        //category.setCreateTime(LocalDateTime.now());
+        //category.setCreateUser(BaseContext.getCurrentId());
+        //category.setUpdateTime(LocalDateTime.now());
+        //category.setUpdateUser(BaseContext.getCurrentId());
         categoryMapper.add(category);
     }
 
