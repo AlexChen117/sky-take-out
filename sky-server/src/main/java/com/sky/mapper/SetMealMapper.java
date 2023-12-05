@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.annotation.AutoFillAdd;
 import com.sky.entity.Setmeal;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,4 +17,7 @@ import java.util.List;
 @Mapper
 public interface SetMealMapper {
     List<Setmeal> findByPage(String name, Integer categoryId, Integer status);
+
+    @AutoFillAdd
+    void add(Setmeal setmeal);
 }

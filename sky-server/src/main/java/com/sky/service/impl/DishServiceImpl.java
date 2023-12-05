@@ -7,7 +7,6 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
-import com.sky.entity.SetmealDish;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.DishException;
 import com.sky.mapper.DishMapper;
@@ -163,8 +162,16 @@ public class DishServiceImpl implements DishService {
         dishMapper.update(dish);
     }
 
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @param disable
+     * @return
+     */
     @Override
     public List<Dish> list(Long categoryId) {
-        return dishMapper.list(categoryId);
+        Integer status = StatusConstant.ENABLE;
+        return dishMapper.list(categoryId,status);
     }
 }

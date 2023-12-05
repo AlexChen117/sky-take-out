@@ -1,5 +1,6 @@
 package com.sky.service;
 
+import com.sky.dto.SetmealDTO;
 import com.sky.result.PageResult;
 
 /**
@@ -12,4 +13,6 @@ import com.sky.result.PageResult;
  */
 public interface SetMealService {
     PageResult findByPage(String name, Integer categoryId, Integer page, Integer pageSize, Integer status);
+
+    void add(SetmealDTO setmealDTO);
 }

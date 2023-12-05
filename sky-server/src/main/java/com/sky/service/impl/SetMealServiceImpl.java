@@ -2,11 +2,14 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.dto.SetmealDTO;
 import com.sky.entity.Setmeal;
+import com.sky.entity.SetmealDish;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +45,20 @@ public class SetMealServiceImpl implements SetMealService {
         List<Setmeal> list = setMealMapper.findByPage(name, categoryId, status);
         Page<Setmeal> p = (Page<Setmeal>) list;
         return new PageResult(p.getTotal(), p.getResult());
+    }
+
+    /**
+     * 添加套餐
+     *
+     * @param setmealDTO
+     */
+    @Override
+    public void add(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO,setmeal);
+        setMealMapper.add(setmeal);
+        Long id = setmeal.getId();
+
+
     }
 }
