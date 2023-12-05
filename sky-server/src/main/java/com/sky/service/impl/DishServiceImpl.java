@@ -112,4 +112,54 @@ public class DishServiceImpl implements DishService {
 
 
     }
+
+    /**
+     * 回显信息
+     *
+     * @param id
+     */
+    @Override
+    public DishVO findById(Long id) {
+        DishVO byId = dishMapper.findById(id);
+        byId.setFlavors(flavorMapper.selectByDishId(id));
+        return byId;
+    }
+
+    /**
+     * 更新菜品
+     *
+     * @param dishDTO
+     */
+    @Override
+    @Transactional
+    public void update(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        //将flavors中的dishId替换成对应的dishId
+        flavors.forEach(item -> item.setDishId(dish.getId()));
+        flavorMapper.deleteByDishId(dish.getId());
+        if (!flavors.isEmpty()) {
+            //将flavors中的dishId替换成对应的dishId
+            flavors.forEach(item -> item.setDishId(dish.getId()));
+            flavorMapper.addBatch(flavors);
+        }
+
+    }
+
+    /**
+     * 菜品起售、停售
+     *
+     * @param status
+     * @param id
+     */
+    @Override
+    public void statusChange(Integer status, Long id) {
+        DishVO byId = dishMapper.findById(id);
+        byId.setStatus(status);
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(byId, dish);
+        dishMapper.update(dish);
+    }
 }

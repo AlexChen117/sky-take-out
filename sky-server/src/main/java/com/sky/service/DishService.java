@@ -3,6 +3,7 @@ package com.sky.service;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
+import com.sky.vo.DishVO;
 
 import java.util.List;
 
@@ -20,4 +21,10 @@ public interface DishService {
     PageResult page(DishPageQueryDTO dishPageQueryDTO);
 
     void delete(List<String> ids);
+
+    DishVO findById(Long id);
+
+    void update(DishDTO dishDTO);
+
+    void statusChange(Integer status,Long id);
 }

@@ -2,9 +2,12 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFillAdd;
+import com.sky.annotation.AutoFillUpdate;
 import com.sky.dto.DishDTO;
 import com.sky.entity.Dish;
+import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -28,4 +31,10 @@ public interface DishMapper {
     Integer selectCountByIdsAndStatus(List<String> ids, Integer status);
 
     void deleteByIds(List<String> ids);
+
+    @Select("select * from dish where id = #{id}")
+    DishVO findById(Long id);
+
+    @AutoFillUpdate
+    void update(Dish dish);
 }

@@ -5,10 +5,9 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +55,7 @@ public class DishController {
 
     /**
      * 批量删除
+     *
      * @param ids
      * @return
      */
@@ -66,5 +66,43 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     * 信息回显
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("{id}")
+    public Result<DishVO> findById(@PathVariable Long id) {
+        log.info("信息回显");
+        DishVO dishVO = dishService.findById(id);
+        return Result.success(dishVO);
+    }
+
+    /**
+     * 更新菜品
+     *
+     * @param dishDTO
+     * @return
+     */
+    @PutMapping
+    public Result<?> update(@RequestBody DishDTO dishDTO) {
+        log.info("更新菜品");
+        dishService.update(dishDTO);
+        return Result.success();
+    }
+
+    /**
+     * 菜品起售、停售
+     *
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result<?> statusChange(@PathVariable Integer status,Long id) {
+        log.info("菜品起售、停售");
+        dishService.statusChange(status,id);
+        return Result.success();
+    }
 
 }
