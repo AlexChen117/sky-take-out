@@ -21,8 +21,8 @@ public interface FlavorMapper {
 
     void update(DishFlavor flavor);
 
-    @Select("select * from dish_flavor where dish_id = #{id}")
-    List<DishFlavor> selectByDishId(Long id);
+    @Select("select * from dish_flavor where dish_id = #{dishId}")
+    List<DishFlavor> selectByDishId(Long dishId);
 
     @Delete("delete  from dish_flavor where dish_id = #{id}")
     void deleteByDishId(Long id);
