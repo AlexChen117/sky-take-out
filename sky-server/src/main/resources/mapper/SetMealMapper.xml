@@ -44,4 +44,10 @@
             </if>
         </where>
     </select>
+    <select id="countStatusByIds" resultType="java.lang.Integer">
+        select count(*) from setmeal where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

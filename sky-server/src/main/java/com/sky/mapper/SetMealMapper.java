@@ -36,4 +36,6 @@ public interface SetMealMapper {
     int findByName(String setmealDTOName);
 
     void delete(List<String> ids);
+
+    Integer countStatusByIds(List<String> ids);
 }

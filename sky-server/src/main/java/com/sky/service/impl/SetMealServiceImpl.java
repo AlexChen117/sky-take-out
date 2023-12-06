@@ -139,8 +139,17 @@ public class SetMealServiceImpl implements SetMealService {
         setMealMapper.update(setmeal);
     }
 
+    /**
+     * 删除套餐
+     *
+     * @param ids
+     */
     @Override
     public void delete(List<String> ids) {
+        Integer count = setMealMapper.countStatusByIds(ids);
+        if (count > 0) {
+            throw new SetmealException("套餐已启售,请先下架");
+        }
         setMealMapper.delete(ids);
         for (String id : ids) {
             setmealDishMapper.deleteBySetmealId(Long.valueOf(id));
