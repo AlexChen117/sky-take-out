@@ -106,7 +106,7 @@ public class SetMealServiceImpl implements SetMealService {
         //校验
         Long setmealDTOId = setmealDTO.getId();
         String setmealDTOName = setmealDTO.getName();
-        int count = setMealMapper.findByNameAndNotId(setmealDTOId,setmealDTOName);
+        int count = setMealMapper.findByNameAndNotId(setmealDTOId, setmealDTOName);
         if (count > 0) {
             throw new SetmealException("套餐名重复,请检查");
         }
@@ -123,5 +123,13 @@ public class SetMealServiceImpl implements SetMealService {
         }
 
 
+    }
+
+
+    @Override
+    public void statusChange(Integer status, Long id) {
+        Setmeal setmeal = setMealMapper.findById(id);
+        setmeal.setStatus(status);
+        setMealMapper.update(setmeal);
     }
 }

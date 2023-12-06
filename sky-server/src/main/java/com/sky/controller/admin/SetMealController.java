@@ -73,10 +73,29 @@ public class SetMealController {
         return Result.success(setmeal);
     }
 
+    /**
+     * 修改套餐
+     *
+     * @param setmealDTO
+     * @return
+     */
     @PutMapping
     public Result<?> update(@RequestBody SetmealDTO setmealDTO) {
         log.info("修改套餐");
         setMealService.update(setmealDTO);
+        return Result.success();
+    }
+
+    /**
+     * 套餐起售、停售
+     *
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result<?> statusChange(@PathVariable Integer status,Long id) {
+        log.info("套餐起售、停售");
+        setMealService.statusChange(status,id);
         return Result.success();
     }
 }
