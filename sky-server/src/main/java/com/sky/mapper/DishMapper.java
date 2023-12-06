@@ -40,4 +40,8 @@ public interface DishMapper {
 
     @Select("select * from dish where category_id = #{categoryId} and status = #{status}")
     List<Dish> list(Long categoryId,Integer status);
+
+
+    @Select("select count(*) from dish where name=#{name} and id != #{id}")
+    Integer selectCountByNameAndNotId(String name, Long id);
 }
