@@ -132,7 +132,6 @@ public class DishServiceImpl implements DishService {
     @Transactional
     public void update(DishDTO dishDTO) {
         //校验
-
         Integer count = dishMapper.selectCountByNameAndNotId(dishDTO.getName(),dishDTO.getId());
         if (count > 0) {
             throw new DishException("菜品名称重复!");

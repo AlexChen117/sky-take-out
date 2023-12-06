@@ -34,12 +34,13 @@ public interface CategoryMapper {
     @Delete("delete from category where id = #{id}")
     void delete(Integer id);
 
-    @Select("select count(*) from category where name = #{name}")
-    int findCategoryByName(String name);
 
     @Select("select count(*) from dish where category_id=#{id}")
     int countDishByCategoryId(Integer id);
 
     @Select("select * from category where type=#{type}")
     List<Category> list(String type);
+
+    @Select("select count(*) from category where name = #{name} and id != #{id}")
+    int findCategoryByName(String name, Long id);
 }

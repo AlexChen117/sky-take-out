@@ -120,7 +120,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param category
      */
     private void checkName(Category category) {
-        int count = categoryMapper.findCategoryByName(category.getName());
+        int count = categoryMapper.findCategoryByName(category.getName(),category.getId());
         if (count > 0) {
             throw new CategoryException("菜品名重复,请检查!");
         }
