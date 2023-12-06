@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.sky.annotation.AutoFillAdd;
 import com.sky.entity.Setmeal;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface SetMealMapper {
 
     @AutoFillAdd
     void add(Setmeal setmeal);
+
+    @Select("select * from setmeal where id = #{id}")
+    Setmeal findById(Long id);
 }
