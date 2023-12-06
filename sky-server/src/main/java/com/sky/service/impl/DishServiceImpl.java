@@ -108,7 +108,9 @@ public class DishServiceImpl implements DishService {
             throw new DeletionNotAllowedException("套餐关联的商品无法删除!");
         }
         dishMapper.deleteByIds(ids);
-
+        ids.forEach(id ->{
+            flavorMapper.deleteByDishId(Long.valueOf(id));
+        });
 
     }
 
@@ -119,9 +121,11 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public DishVO findById(Long id) {
-        DishVO byId = dishMapper.findById(id);
-        byId.setFlavors(flavorMapper.selectByDishId(id));
-        return byId;
+        Dish byId = dishMapper.findById(id);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(byId, dishVO);
+        dishVO.setFlavors(flavorMapper.selectByDishId(id));
+        return dishVO;
     }
 
     /**
@@ -155,18 +159,15 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public void statusChange(Integer status, Long id) {
-        DishVO byId = dishMapper.findById(id);
+        Dish byId = dishMapper.findById(id);
         byId.setStatus(status);
-        Dish dish = new Dish();
-        BeanUtils.copyProperties(byId, dish);
-        dishMapper.update(dish);
+        dishMapper.update(byId);
     }
 
     /**
      * 根据分类id查询菜品
      *
      * @param categoryId
-     * @param disable
      * @return
      */
     @Override
