@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.dto.SetmealDTO;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.SetMealService;
@@ -29,19 +30,17 @@ public class SetMealController {
     /**
      * 套餐分页查询
      *
-     * @param name
-     * @param categoryId
-     * @param page
-     * @param pageSize
-     * @param status
+     * @param setmealPageQueryDTO
      * @return
      */
     @GetMapping("/page")
-    public Result<PageResult> findByPage(String name, Integer categoryId,
-                                         @RequestParam(defaultValue = "1") Integer page,
-                                         @RequestParam(defaultValue = "10") Integer pageSize,
-                                         Integer status) {
+    public Result<PageResult> findByPage(SetmealPageQueryDTO setmealPageQueryDTO) {
         log.info("套餐分页查询");
+        String name = setmealPageQueryDTO.getName();
+        Integer categoryId = setmealPageQueryDTO.getCategoryId();
+        int page = setmealPageQueryDTO.getPage();
+        int pageSize = setmealPageQueryDTO.getPageSize();
+        Integer status = setmealPageQueryDTO.getStatus();
         PageResult p = setMealService.findByPage(name, categoryId, page, pageSize, status);
         return Result.success(p);
     }
@@ -49,7 +48,7 @@ public class SetMealController {
     @PostMapping
     public Result<?> add(@RequestBody SetmealDTO setmealDTO) {
         log.info("添加套餐");
-        System.out.println(setmealDTO);
+        //System.out.println(setmealDTO);
         setMealService.add(setmealDTO);
         return Result.success();
         //SetmealDTO(id=null, categoryId=13, name=test, price=68, status=0, description=ceshi, image=1.png,
