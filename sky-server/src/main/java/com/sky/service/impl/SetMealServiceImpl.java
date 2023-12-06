@@ -125,6 +125,12 @@ public class SetMealServiceImpl implements SetMealService {
 
     }
 
+    /**
+     * 套餐起售、停售
+     *
+     * @param status
+     * @param id
+     */
 
     @Override
     public void statusChange(Integer status, Long id) {
@@ -132,4 +138,13 @@ public class SetMealServiceImpl implements SetMealService {
         setmeal.setStatus(status);
         setMealMapper.update(setmeal);
     }
+
+    @Override
+    public void delete(List<String> ids) {
+        setMealMapper.delete(ids);
+        for (String id : ids) {
+            setmealDishMapper.deleteBySetmealId(Long.valueOf(id));
+        }
+    }
+
 }

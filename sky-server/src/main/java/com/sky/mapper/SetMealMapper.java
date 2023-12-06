@@ -35,4 +35,5 @@ public interface SetMealMapper {
     @Select("select count(*) from setmeal where name= #{setmealDTOName}")
     int findByName(String setmealDTOName);
 
+    void delete(List<String> ids);
 }

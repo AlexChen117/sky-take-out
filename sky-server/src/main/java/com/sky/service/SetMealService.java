@@ -4,6 +4,8 @@ import com.sky.dto.SetmealDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.SetmealVO;
 
+import java.util.List;
+
 /**
  * 套餐管理Service
  *
@@ -22,4 +24,6 @@ public interface SetMealService {
     void update(SetmealDTO setmealDTO);
 
     void statusChange(Integer status,Long id);
+
+    void delete(List<String> ids);
 }

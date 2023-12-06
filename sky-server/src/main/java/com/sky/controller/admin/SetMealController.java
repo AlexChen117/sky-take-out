@@ -8,8 +8,12 @@ import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 套餐管理
@@ -93,9 +97,17 @@ public class SetMealController {
      * @return
      */
     @PostMapping("/status/{status}")
-    public Result<?> statusChange(@PathVariable Integer status,Long id) {
+    public Result<?> statusChange(@PathVariable Integer status, Long id) {
         log.info("套餐起售、停售");
-        setMealService.statusChange(status,id);
+        setMealService.statusChange(status, id);
+        return Result.success();
+    }
+
+    @DeleteMapping
+    public Result<?> delete(@RequestParam List<String> ids) {
+        log.info("批量删除");
+        System.out.println(ids);
+        setMealService.delete(ids);
         return Result.success();
     }
 }
