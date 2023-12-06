@@ -37,5 +37,5 @@ public interface SetMealMapper {
 
     void delete(List<String> ids);
 
-    Integer countStatusByIds(List<String> ids);
+    Integer countStatusByIds(List<String> ids,Integer status);
 }

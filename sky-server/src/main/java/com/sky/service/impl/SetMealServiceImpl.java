@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
@@ -146,7 +147,8 @@ public class SetMealServiceImpl implements SetMealService {
      */
     @Override
     public void delete(List<String> ids) {
-        Integer count = setMealMapper.countStatusByIds(ids);
+        Integer status= StatusConstant.ENABLE;
+        Integer count = setMealMapper.countStatusByIds(ids,status);
         if (count > 0) {
             throw new SetmealException("套餐已启售,请先下架");
         }

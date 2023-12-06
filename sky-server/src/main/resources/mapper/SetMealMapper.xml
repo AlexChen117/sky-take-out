@@ -49,5 +49,6 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        and status = #{status}
     </select>
 </mapper>
