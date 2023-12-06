@@ -5,6 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.sky.dto.SetmealDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.SetmealEnableFailedException;
+import com.sky.exception.SetmealException;
 import com.sky.mapper.SetMealMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
@@ -59,8 +61,14 @@ public class SetMealServiceImpl implements SetMealService {
      * @param setmealDTO
      */
     @Override
-    @Transactional
+    @Transactional //事务
     public void add(SetmealDTO setmealDTO) {
+        //校验
+        String setmealDTOName = setmealDTO.getName();
+        int count = setMealMapper.findByName(setmealDTOName);
+        if (count > 0) {
+            throw new SetmealException("套餐名重复,请检查");
+        }
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
         setMealMapper.add(setmeal);
@@ -74,6 +82,8 @@ public class SetMealServiceImpl implements SetMealService {
     }
 
     /**
+     * 根据id查询套餐(回显)
+     *
      * @return
      */
     @Override
@@ -83,5 +93,35 @@ public class SetMealServiceImpl implements SetMealService {
         BeanUtils.copyProperties(setmealQuery, setmealVO);
         setmealVO.setSetmealDishes(setmealDishMapper.findBySetmealId(id));
         return setmealVO;
+    }
+
+    /**
+     * 更新套餐
+     *
+     * @param setmealDTO
+     */
+    @Override
+    @Transactional
+    public void update(SetmealDTO setmealDTO) {
+        //校验
+        Long setmealDTOId = setmealDTO.getId();
+        String setmealDTOName = setmealDTO.getName();
+        int count = setMealMapper.findByNameAndNotId(setmealDTOId,setmealDTOName);
+        if (count > 0) {
+            throw new SetmealException("套餐名重复,请检查");
+        }
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+        setMealMapper.update(setmeal);
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishMapper.deleteBySetmealId(setmeal.getId());
+        if (setmealDishes != null) {
+            setmealDishes.forEach(setmealDish -> {
+                setmealDish.setSetmealId(setmeal.getId());
+            });
+            setmealDishMapper.add(setmealDishes);
+        }
+
+
     }
 }

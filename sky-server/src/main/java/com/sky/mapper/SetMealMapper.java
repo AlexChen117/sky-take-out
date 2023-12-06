@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.annotation.AutoFillAdd;
+import com.sky.annotation.AutoFillUpdate;
 import com.sky.entity.Setmeal;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -24,4 +25,14 @@ public interface SetMealMapper {
 
     @Select("select * from setmeal where id = #{id}")
     Setmeal findById(Long id);
+
+    @AutoFillUpdate
+    void update(Setmeal setmeal);
+
+    @Select("select count(*) from setmeal where name= #{setmealDTOName} and id != #{setmealDTOId}")
+    int findByNameAndNotId(Long setmealDTOId, String setmealDTOName);
+
+    @Select("select count(*) from setmeal where name= #{setmealDTOName}")
+    int findByName(String setmealDTOName);
+
 }

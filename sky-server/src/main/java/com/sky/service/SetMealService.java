@@ -18,4 +18,6 @@ public interface SetMealService {
     void add(SetmealDTO setmealDTO);
 
     SetmealVO findById(Long id);
+
+    void update(SetmealDTO setmealDTO);
 }

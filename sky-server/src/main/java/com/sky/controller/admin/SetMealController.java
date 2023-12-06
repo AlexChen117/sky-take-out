@@ -68,8 +68,15 @@ public class SetMealController {
      */
     @GetMapping("/{id}")
     public Result<SetmealVO> findById(@PathVariable Long id) {
-        log.info("根据id查询套餐:{}",id);
-        SetmealVO setmeal=setMealService.findById(id);
+        log.info("根据id查询套餐:{}", id);
+        SetmealVO setmeal = setMealService.findById(id);
         return Result.success(setmeal);
+    }
+
+    @PutMapping
+    public Result<?> update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("修改套餐");
+        setMealService.update(setmealDTO);
+        return Result.success();
     }
 }
