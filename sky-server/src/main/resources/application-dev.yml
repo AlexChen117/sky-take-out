@@ -11,3 +11,9 @@ sky:
       bucketName: bucket-cy117
       accessKeyId: LTAI5tST6fu9NoRYffe5ySSe
       accessKeySecret: vOp2LEQ3Kx6RZcOYI94p20TzSxxcqL
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password: 125004
