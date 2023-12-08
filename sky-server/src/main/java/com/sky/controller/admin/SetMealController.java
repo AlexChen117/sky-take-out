@@ -103,6 +103,12 @@ public class SetMealController {
         return Result.success();
     }
 
+    /**
+     * 删除
+     *
+     * @param ids
+     * @return
+     */
     @DeleteMapping
     public Result<?> delete(@RequestParam List<String> ids) {
         log.info("批量删除");
