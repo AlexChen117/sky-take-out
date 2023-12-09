@@ -44,4 +44,13 @@ public interface DishMapper {
 
     @Select("select count(*) from dish where name=#{name} and id != #{id}")
     Integer selectCountByNameAndNotId(String name, Long id);
+
+    @Select("select * from dish where category_id=#{categoryId} and status=#{status}")
+    List<Dish> findByList(Dish dish);
+
+    @Select("select dish.image from dish where name = #{name}")
+    String findImageByDishName(String name);
+
+    @Select("select description from dish where name = #{name}")
+    String findDescDishName(String name);
 }

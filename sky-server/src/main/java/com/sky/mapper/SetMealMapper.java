@@ -38,4 +38,7 @@ public interface SetMealMapper {
     void delete(List<String> ids);
 
     Integer countStatusByIds(List<String> ids,Integer status);
+
+    @Select("select * from setmeal where category_id=#{categoryId} and status=#{status}")
+    List<Setmeal> list(Setmeal setmeal);
 }

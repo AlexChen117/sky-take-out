@@ -43,4 +43,7 @@ public interface CategoryMapper {
 
     @Select("select count(*) from category where name = #{name} and id != #{id}")
     int findCategoryByName(String name, Long id);
+
+    @Select("select * from category")
+    List<Category> findByType(Integer type);
 }
