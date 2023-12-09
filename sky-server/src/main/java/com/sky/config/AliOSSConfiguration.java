@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2023/12/5 11:30:29
  */
 @Configuration
-public class AliOSSConfiguration {
+public  class AliOSSConfiguration {
 
     @Bean
     public AliOssUtil aliOssUtil(AliOssProperties aliOssProperties) {
