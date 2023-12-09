@@ -33,4 +33,14 @@ public class UserController {
         return Result.success(login);
 
     }
+
+    /**
+     * 退出
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public Result<?> logout() {
+        return Result.success();
+    }
 }
