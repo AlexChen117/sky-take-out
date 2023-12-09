@@ -59,9 +59,10 @@ public class ShopListServiceImpl implements ShopListService {
         dish.setCategoryId(categoryId);
         dish.setStatus(StatusConstant.ENABLE);
         List<Dish> dishList = dishMapper.findByList(dish);
-        DishVO dishVO = new DishVO();
+        System.out.println(dishList);
         List<DishVO> dishVOS = new ArrayList<>();
         for (Dish d : dishList) {
+            DishVO dishVO = new DishVO();
             BeanUtils.copyProperties(d, dishVO);
             dishVO.setFlavors(flavorMapper.selectByDishId(d.getId()));
             dishVOS.add(dishVO);
@@ -82,12 +83,18 @@ public class ShopListServiceImpl implements ShopListService {
         return setMealMapper.list(setmeal);
     }
 
+    /**
+     * 根据套餐id查询包含的菜品
+     *
+     * @param id
+     * @return
+     */
     @Override
     public List<DishItemVO> findDishBySetmealId(Long id) {
         List<DishItemVO> list = new ArrayList<>();
-        DishItemVO vo = new DishItemVO();
         List<SetmealDish> setmealDishList = setmealDishMapper.findBySetmealId(id);
         for (SetmealDish setmealDish : setmealDishList) {
+            DishItemVO vo = new DishItemVO();
             vo.setName(setmealDish.getName());
             vo.setCopies(setmealDish.getCopies());
             vo.setImage(dishMapper.findImageByDishName(setmealDish.getName()));

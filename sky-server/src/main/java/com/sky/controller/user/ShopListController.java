@@ -41,6 +41,7 @@ public class ShopListController {
     public Result<List<Category>> categoryList(Integer type) {
         log.info("条件查询:{}", type);
         List<Category> category = shopListService.categoryList(type);
+        System.out.println("条件查询:" + category);
         return Result.success(category);
     }
 
@@ -54,6 +55,7 @@ public class ShopListController {
     public Result<List<DishVO>> dishList(Long categoryId) {
         log.info("根据分类id查询菜品");
         List<DishVO> list = shopListService.dishList(categoryId);
+        System.out.println("根据分类id查询菜品: " + list);
         return Result.success(list);
     }
 
@@ -66,6 +68,7 @@ public class ShopListController {
     public Result<List<Setmeal>> setmealList(Long categoryId) {
         log.info("根据分类id查询套餐");
         List<Setmeal> list = shopListService.setmealList(categoryId);
+        System.out.println("根据分类id查询套餐:" + list);
         return Result.success(list);
     }
 
@@ -79,6 +82,7 @@ public class ShopListController {
     public Result<?> findDishBySetmealId(@PathVariable Long id) {
         log.info("根据套餐id查询包含的菜品");
         List<DishItemVO> dishItemVO = shopListService.findDishBySetmealId(id);
+        System.out.println("根据套餐id查询包含的菜品: " + dishItemVO);
         return Result.success(dishItemVO);
     }
 

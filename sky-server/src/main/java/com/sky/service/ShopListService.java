@@ -20,6 +20,5 @@ public interface ShopListService {
 
     List<Setmeal> setmealList(Long categoryId);
 
-
     List<DishItemVO> findDishBySetmealId(Long id);
 }
