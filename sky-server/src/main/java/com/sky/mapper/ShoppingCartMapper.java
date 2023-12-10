@@ -20,4 +20,6 @@ public interface ShoppingCartMapper {
     void update(ShoppingCart shoppingCart);
 
     List<ShoppingCart> selectList(ShoppingCart shoppingCart);
+
+    void delete(ShoppingCart shoppingCart);
 }

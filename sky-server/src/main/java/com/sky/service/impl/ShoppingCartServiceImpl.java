@@ -92,4 +92,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCart.setUserId(BaseContext.getCurrentId());
         return shoppingCartMapper.selectList(shoppingCart);
     }
+
+    @Override
+    public void delete() {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        shoppingCartMapper.delete(shoppingCart);
+    }
 }

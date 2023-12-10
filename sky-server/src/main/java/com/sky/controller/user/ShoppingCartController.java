@@ -40,10 +40,27 @@ public class ShoppingCartController {
         return Result.success();
     }
 
+    /**
+     * 购物车查看
+     *
+     * @return
+     */
     @GetMapping("/list")
     public Result<List<ShoppingCart>> list() {
         log.info("购物车查看");
         List<ShoppingCart> list = shoppingCartService.list();
         return Result.success(list);
+    }
+
+    /**
+     * 清空购物车
+     *
+     * @return
+     */
+    @DeleteMapping("/clean")
+    public Result<?> deleteById() {
+        log.info("清空购物车");
+        shoppingCartService.delete();
+        return Result.success();
     }
 }
