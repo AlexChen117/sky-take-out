@@ -1,5 +1,7 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.StatusConstant;
@@ -16,11 +18,16 @@ import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +45,7 @@ public class DishServiceImpl implements DishService {
     private final DishMapper dishMapper;
     private final FlavorMapper flavorMapper;
     private final SetmealDishMapper setmealDishMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 新增菜品
@@ -62,7 +70,6 @@ public class DishServiceImpl implements DishService {
         dishMapper.add(dish);
         //添加口味
         saveDishFlavors(dishDTO, dish);
-
     }
 
     /**
@@ -106,7 +113,6 @@ public class DishServiceImpl implements DishService {
         ids.forEach(id -> {
             flavorMapper.deleteByDishId(Long.valueOf(id));
         });
-
     }
 
     /**
@@ -132,7 +138,7 @@ public class DishServiceImpl implements DishService {
     @Transactional
     public void update(DishDTO dishDTO) {
         //校验
-        Integer count = dishMapper.selectCountByNameAndNotId(dishDTO.getName(),dishDTO.getId());
+        Integer count = dishMapper.selectCountByNameAndNotId(dishDTO.getName(), dishDTO.getId());
         if (count > 0) {
             throw new DishException("菜品名称重复!");
         }
@@ -142,6 +148,7 @@ public class DishServiceImpl implements DishService {
         flavorMapper.deleteByDishId(dish.getId());
         saveDishFlavors(dishDTO, dish);
     }
+
     /**
      * 菜品起售、停售
      *
@@ -155,6 +162,7 @@ public class DishServiceImpl implements DishService {
         dishMapper.update(byId);
     }
 
+
     /**
      * 根据分类id查询菜品
      *
@@ -163,8 +171,19 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public List<Dish> list(Long categoryId) {
+        //走redis取数据
+        String key = "DISH:" + categoryId;
+        String dishJson = (String) redisTemplate.opsForValue().get(key);
+        if (StringUtils.isNoneEmpty(dishJson)) {
+            return JSON.parseArray(dishJson, Dish.class);
+        }
+        //走数据库
         Integer status = StatusConstant.ENABLE;
-        return dishMapper.list(categoryId, status);
+        List<Dish> list = dishMapper.list(categoryId, status);
+        if (Objects.nonNull(list) && !list.isEmpty()) {
+            redisTemplate.opsForValue().set(key, JSON.toJSONString(list));
+        }
+        return list;
     }
 
     /**

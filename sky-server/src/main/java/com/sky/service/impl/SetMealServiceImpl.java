@@ -15,6 +15,8 @@ import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +65,7 @@ public class SetMealServiceImpl implements SetMealService {
      */
     @Override
     @Transactional //事务
+    @CacheEvict(cacheNames = "SETMEAL",allEntries = true)
     public void add(SetmealDTO setmealDTO) {
         //校验
         String setmealDTOName = setmealDTO.getName();
@@ -103,6 +106,7 @@ public class SetMealServiceImpl implements SetMealService {
      */
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "SETMEAL",allEntries = true)
     public void update(SetmealDTO setmealDTO) {
         //校验
         Long setmealDTOId = setmealDTO.getId();
@@ -134,6 +138,7 @@ public class SetMealServiceImpl implements SetMealService {
      */
 
     @Override
+    @CacheEvict(cacheNames = "SETMEAL",allEntries = true)
     public void statusChange(Integer status, Long id) {
         Setmeal setmeal = setMealMapper.findById(id);
         setmeal.setStatus(status);
@@ -146,6 +151,7 @@ public class SetMealServiceImpl implements SetMealService {
      * @param ids
      */
     @Override
+    @CacheEvict(cacheNames = "SETMEAL",allEntries = true)
     public void delete(List<String> ids) {
         Integer status= StatusConstant.ENABLE;
         Integer count = setMealMapper.countStatusByIds(ids,status);

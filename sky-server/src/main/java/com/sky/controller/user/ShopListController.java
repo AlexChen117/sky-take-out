@@ -79,7 +79,7 @@ public class ShopListController {
      * @return
      */
     @GetMapping("setmeal/dish/{id}")
-    public Result<?> findDishBySetmealId(@PathVariable Long id) {
+    public Result<List<DishItemVO>> findDishBySetmealId(@PathVariable Long id) {
         log.info("根据套餐id查询包含的菜品");
         List<DishItemVO> dishItemVO = shopListService.findDishBySetmealId(id);
         System.out.println("根据套餐id查询包含的菜品: " + dishItemVO);
