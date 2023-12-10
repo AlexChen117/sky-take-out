@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -63,7 +64,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (Objects.nonNull(shoppingCartDTO.getSetmealId())) {
             ShoppingCart scQuery = new ShoppingCart();
             scQuery.setUserId(BaseContext.getCurrentId());
-            scQuery.setDishId(shoppingCartDTO.getSetmealId());
+            scQuery.setSetmealId(shoppingCartDTO.getSetmealId());
             ShoppingCart shoppingCart = shoppingCartMapper.selectOne(scQuery);
             if (Objects.isNull(shoppingCart)) {
                 shoppingCart = new ShoppingCart();
@@ -83,5 +84,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
 
+    }
+
+    @Override
+    public List<ShoppingCart> list() {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        return shoppingCartMapper.selectList(shoppingCart);
     }
 }

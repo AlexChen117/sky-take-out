@@ -3,6 +3,8 @@ package com.sky.mapper;
 import com.sky.entity.ShoppingCart;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author Alex
  * @version 1.0
@@ -16,4 +18,6 @@ public interface ShoppingCartMapper {
     void add(ShoppingCart shoppingCart);
 
     void update(ShoppingCart shoppingCart);
+
+    List<ShoppingCart> selectList(ShoppingCart shoppingCart);
 }
