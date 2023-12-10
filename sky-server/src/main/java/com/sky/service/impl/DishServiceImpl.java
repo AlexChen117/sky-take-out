@@ -172,17 +172,17 @@ public class DishServiceImpl implements DishService {
     @Override
     public List<Dish> list(Long categoryId) {
         //走redis取数据
-        String key = "DISH:" + categoryId;
-        String dishJson = (String) redisTemplate.opsForValue().get(key);
-        if (StringUtils.isNoneEmpty(dishJson)) {
-            return JSON.parseArray(dishJson, Dish.class);
-        }
+        //String key = "DISH:" + categoryId;
+        //String dishJson = (String) redisTemplate.opsForValue().get(key);
+        //if (StringUtils.isNoneEmpty(dishJson)) {
+        //    return JSON.parseArray(dishJson, Dish.class);
+        //}
         //走数据库
         Integer status = StatusConstant.ENABLE;
         List<Dish> list = dishMapper.list(categoryId, status);
-        if (Objects.nonNull(list) && !list.isEmpty()) {
-            redisTemplate.opsForValue().set(key, JSON.toJSONString(list));
-        }
+        //if (Objects.nonNull(list) && !list.isEmpty()) {
+        //    redisTemplate.opsForValue().set(key, JSON.toJSONString(list));
+        //}
         return list;
     }
 
