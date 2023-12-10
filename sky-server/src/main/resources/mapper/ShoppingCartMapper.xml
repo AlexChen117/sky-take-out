@@ -31,6 +31,11 @@
             </if>
         </where>
     </delete>
+    <delete id="deleteOne">
+        delete
+        from shopping_cart
+        where id = #{id}
+    </delete>
 
     <select id="selectOne" resultType="com.sky.entity.ShoppingCart">
         select id, name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time
@@ -55,5 +60,15 @@
                create_time
         from shopping_cart
         where user_id = #{userId}
+    </select>
+    <select id="findCount" resultType="java.lang.Integer">
+        select count(*)
+        from shopping_cart
+        <where>
+            <if test="dishId!=null">and dish_id=#{dishId}</if>
+        </where>
+        <where>
+            <if test="setmealId!=null">and setmeal_id=#{setmealId}</if>
+        </where>
     </select>
 </mapper>

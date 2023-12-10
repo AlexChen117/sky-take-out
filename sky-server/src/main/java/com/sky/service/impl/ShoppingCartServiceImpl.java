@@ -9,12 +9,14 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.ShoppingCartService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -82,8 +84,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 shoppingCartMapper.update(shoppingCart);
             }
         }
-
-
     }
 
     @Override
@@ -98,5 +98,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(BaseContext.getCurrentId());
         shoppingCartMapper.delete(shoppingCart);
+    }
+
+    /**
+     * 删除购物车中一个商品
+     *
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        ShoppingCart scQuery = new ShoppingCart();
+        scQuery.setUserId(BaseContext.getCurrentId());
+        scQuery.setDishId(shoppingCartDTO.getDishId());
+        scQuery.setSetmealId(shoppingCartDTO.getSetmealId());
+        ShoppingCart sc = shoppingCartMapper.selectOne(scQuery);
+        Integer number = sc.getNumber();
+        if (number > 1) {
+            sc.setNumber(number - 1);
+            shoppingCartMapper.update(sc);
+        } else {
+            shoppingCartMapper.deleteOne(sc);
+        }
+
     }
 }
