@@ -66,4 +66,18 @@ public class OrderController {
         PageResult pg = orderService.historyOrders(ordersPageQueryDTO);
         return Result.success(pg);
     }
+
+    /**
+     * 催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    public Result<?> reminder(@PathVariable Integer id) {
+        log.info("催单");
+
+        return Result.success();
+    }
+
+
 }
