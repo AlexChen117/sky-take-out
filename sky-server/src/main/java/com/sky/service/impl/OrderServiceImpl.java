@@ -150,15 +150,28 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 查询订单详情
+     *
      * @param id
      * @return
      */
     @Override
     public OrderVO orderDetail(Integer id) {
-        Orders o =orderMapper.findOrderById(id);
+        Orders o = orderMapper.findOrderById(id);
         OrderVO orderVO = new OrderVO();
-        BeanUtils.copyProperties(o,orderVO);
+        BeanUtils.copyProperties(o, orderVO);
         orderVO.setOrderDetailList(orderDetailMapper.findByOrdersId(orderVO.getId()));
         return orderVO;
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param id
+     */
+    @Override
+    public void cancel(Integer id) {
+        Orders orders = orderMapper.findOrderById(id);
+        orders.setStatus(Orders.CANCELLED);
+        orderMapper.updateById(orders);
     }
 }

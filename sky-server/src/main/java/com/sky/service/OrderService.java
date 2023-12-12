@@ -20,4 +20,6 @@ public interface OrderService {
     PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO);
 
     OrderVO orderDetail(Integer id);
+
+    void cancel(Integer id);
 }

@@ -99,8 +99,20 @@ public class OrderController {
     @GetMapping("orderDetail/{id}")
     public Result<OrderVO> orderDetail(@PathVariable Integer id) {
         log.info("查询订单详情");
-        OrderVO o =orderService.orderDetail(id);
+        OrderVO o = orderService.orderDetail(id);
         return Result.success(o);
+    }
+
+    /**
+     * 取消订单
+     *
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    public Result<?> cancel(@PathVariable Integer id) {
+        log.info("取消订单");
+        orderService.cancel(id);
+        return Result.success();
     }
 
 
