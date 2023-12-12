@@ -24,4 +24,7 @@ public interface OrderMapper {
 
     @Select("select * from orders where user_id = #{currentId}")
     Page<Orders> findOrderByUserId(Long currentId);
+
+    @Select("select * from orders where id = #{id};")
+    Orders findOrderById(Integer id);
 }

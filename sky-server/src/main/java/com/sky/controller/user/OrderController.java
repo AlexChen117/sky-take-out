@@ -1,18 +1,15 @@
 package com.sky.controller.user;
 
-import com.sky.dto.OrdersDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
-import com.sky.vo.OrdersVO;
+import com.sky.vo.OrderVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 订单管理
@@ -91,6 +88,19 @@ public class OrderController {
         log.info("再来一单");
 
         return Result.success();
+    }
+
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("orderDetail/{id}")
+    public Result<OrderVO> orderDetail(@PathVariable Integer id) {
+        log.info("查询订单详情");
+        OrderVO o =orderService.orderDetail(id);
+        return Result.success(o);
     }
 
 

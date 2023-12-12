@@ -19,17 +19,16 @@ import com.sky.mapper.UserAddressMapper;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import com.sky.vo.OrdersVO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -138,14 +137,28 @@ public class OrderServiceImpl implements OrderService {
     public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
         Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId());
-        List<OrdersVO> collect = orders.getResult().stream().map(
+        List<OrderVO> collect = orders.getResult().stream().map(
                 order -> {
-                    OrdersVO ordersVO = new OrdersVO();
-                    BeanUtils.copyProperties(order, ordersVO);
-                    ordersVO.setOrderDetailList(orderDetailMapper.findByOrdersId(ordersVO.getId()));
-                    return ordersVO;
+                    OrderVO orderVO = new OrderVO();
+                    BeanUtils.copyProperties(order, orderVO);
+                    orderVO.setOrderDetailList(orderDetailMapper.findByOrdersId(orderVO.getId()));
+                    return orderVO;
                 }
         ).collect(Collectors.toList());
         return new PageResult(orders.getTotal(), collect);
+    }
+
+    /**
+     * 查询订单详情
+     * @param id
+     * @return
+     */
+    @Override
+    public OrderVO orderDetail(Integer id) {
+        Orders o =orderMapper.findOrderById(id);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(o,orderVO);
+        orderVO.setOrderDetailList(orderDetailMapper.findByOrdersId(orderVO.getId()));
+        return orderVO;
     }
 }
