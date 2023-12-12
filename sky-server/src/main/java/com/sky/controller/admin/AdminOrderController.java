@@ -4,6 +4,7 @@ import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.AdminOrderService;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,21 @@ public class AdminOrderController {
     @GetMapping("/conditionSearch")
     public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
         log.info("订单搜索");
+        System.out.println(ordersPageQueryDTO.getStatus());
         PageResult orderVOList = adminOrderService.conditionSearch(ordersPageQueryDTO);
-        System.out.println(orderVOList);
+        //System.out.println(orderVOList);
         return Result.success(orderVOList);
+    }
+
+    /**
+     * 各个状态的订单数量统计
+     *
+     * @return
+     */
+    @GetMapping("/statistics")
+    public Result<OrderStatisticsVO> statistics() {
+        log.info("各个状态的订单数量统计");
+        OrderStatisticsVO orderStatisticsVO = adminOrderService.statistics();
+        return Result.success(orderStatisticsVO);
     }
 }

@@ -9,6 +9,7 @@ import com.sky.mapper.AdminOrderMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminOrderServiceImpl implements AdminOrderService {
     private final AdminOrderMapper adminOrderMapper;
-    private final OrderMapper orderMapper;
 
     /**
      * 订单搜索
@@ -44,6 +44,20 @@ public class AdminOrderServiceImpl implements AdminOrderService {
             BeanUtils.copyProperties(order, vo);
             return vo;
         }).collect(Collectors.toList());
-        return new PageResult(orders.getTotal(),collect);
+        return new PageResult(orders.getTotal(), collect);
+    }
+
+    /**
+     * 各个状态的订单数量统计
+     *
+     * @return
+     */
+    @Override
+    public OrderStatisticsVO statistics() {
+        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
+        orderStatisticsVO.setConfirmed(adminOrderMapper.findOrdersByStatus(Orders.CONFIRMED));
+        orderStatisticsVO.setToBeConfirmed(adminOrderMapper.findOrdersByStatus(Orders.TO_BE_CONFIRMED));
+        orderStatisticsVO.setDeliveryInProgress(adminOrderMapper.findOrdersByStatus(Orders.DELIVERY_IN_PROGRESS));
+        return orderStatisticsVO;
     }
 }
