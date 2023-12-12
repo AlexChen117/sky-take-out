@@ -1,5 +1,6 @@
 package com.sky.service;
 
+import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersRejectionDTO;
 import com.sky.result.PageResult;
@@ -20,4 +21,8 @@ public interface AdminOrderService {
     OrderStatisticsVO statistics();
 
     void cancel(OrdersRejectionDTO ordersRejectionDTO);
+
+    void complete(Integer id);
+
+    void confirm(OrdersConfirmDTO ordersConfirmDTO);
 }

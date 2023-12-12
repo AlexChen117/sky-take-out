@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersRejectionDTO;
 import com.sky.entity.Orders;
@@ -68,6 +69,32 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         orders.setId(ordersRejectionDTO.getId());
         orders.setStatus(Orders.CANCELLED);
         orders.setCancelReason(ordersRejectionDTO.getRejectionReason());
+        adminOrderMapper.update(orders);
+    }
+
+    /**
+     * 完成订单
+     *
+     * @param id
+     */
+    @Override
+    public void complete(Integer id) {
+        Orders orders = new Orders();
+        orders.setId(Long.valueOf(id));
+        orders.setStatus(Orders.COMPLETED);
+        adminOrderMapper.update(orders);
+    }
+
+    /**
+     * 接单
+     *
+     * @param
+     */
+    @Override
+    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+        Orders orders = new Orders();
+        orders.setId(ordersConfirmDTO.getId());
+        orders.setStatus(Orders.CONFIRMED);
         adminOrderMapper.update(orders);
     }
 }
