@@ -105,4 +105,16 @@ public class AdminOrderController {
         adminOrderService.delivery(id);
         return Result.success();
     }
+
+    /**
+     * 拒单
+     *
+     * @return
+     */
+    @PutMapping("/rejection")
+    public Result<?> rejection(@RequestBody OrdersRejectionDTO ordersRejectionDTO) {
+        log.info("拒单");
+        adminOrderService.rejection(ordersRejectionDTO);
+        return Result.success();
+    }
 }

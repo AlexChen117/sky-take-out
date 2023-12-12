@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +101,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     /**
      * 派送
+     *
      * @param id
      */
     @Override
@@ -107,6 +109,21 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Orders orders = new Orders();
         orders.setId(id);
         orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
+        adminOrderMapper.update(orders);
+    }
+
+    /**
+     * 拒单
+     *
+     * @param ordersRejectionDTO
+     */
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        Orders orders = new Orders();
+        orders.setId(ordersRejectionDTO.getId());
+        orders.setStatus(Orders.CANCELLED);
+        orders.setCancelTime(LocalDateTime.now());
+        orders.setCancelReason(ordersRejectionDTO.getRejectionReason());
         adminOrderMapper.update(orders);
     }
 }
