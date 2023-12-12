@@ -86,7 +86,7 @@ public class OrderController {
     @PostMapping("repetition/{id}")
     public Result<?> repetition(@PathVariable Integer id) {
         log.info("再来一单");
-
+        orderService.repetition(id);
         return Result.success();
     }
 

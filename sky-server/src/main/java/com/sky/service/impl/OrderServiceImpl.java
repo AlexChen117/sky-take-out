@@ -6,29 +6,25 @@ import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersSubmitDTO;
-import com.sky.entity.AddressBook;
-import com.sky.entity.OrderDetail;
-import com.sky.entity.Orders;
-import com.sky.entity.ShoppingCart;
+import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
-import com.sky.mapper.OrderDetailMapper;
-import com.sky.mapper.OrderMapper;
-import com.sky.mapper.ShoppingCartMapper;
-import com.sky.mapper.UserAddressMapper;
+import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -44,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserAddressMapper addressMapper;
     private final ShoppingCartMapper shoppingCartMapper;
     private final OrderDetailMapper orderDetailMapper;
+    private final DishMapper dishMapper;
+    private final SetMealMapper setMealMapper;
 
     @Override
     public OrderSubmitVO submit(OrdersSubmitDTO submitDTO) {
@@ -173,5 +171,43 @@ public class OrderServiceImpl implements OrderService {
         Orders orders = orderMapper.findOrderById(id);
         orders.setStatus(Orders.CANCELLED);
         orderMapper.updateById(orders);
+    }
+
+    /**
+     * 再来一单
+     *
+     * @param id
+     */
+    @Override
+    public void repetition(Integer id) {
+        List<OrderDetail> orderDetail = orderDetailMapper.findByOrdersId(Long.valueOf(id));
+        ArrayList<Dish> dishList = new ArrayList<>();
+        ArrayList<Setmeal> setmealList = new ArrayList<>();
+        for (OrderDetail detail : orderDetail) {
+            if (detail.getDishId() != null && detail.getSetmealId() == null) {
+                ShoppingCart shoppingCart = new ShoppingCart();
+                shoppingCart.setUserId(BaseContext.getCurrentId());
+                shoppingCart.setDishId(detail.getDishId());
+                shoppingCart.setDishFlavor(detail.getDishFlavor());
+                shoppingCart.setName(detail.getName());
+                shoppingCart.setNumber(detail.getNumber());
+                shoppingCart.setAmount(detail.getAmount());
+                shoppingCart.setImage(detail.getImage());
+                shoppingCart.setCreateTime(LocalDateTime.now());
+                shoppingCartMapper.add(shoppingCart);
+            } else if (detail.getSetmealId() != null && detail.getDishId() == null) {
+                ShoppingCart shoppingCart = new ShoppingCart();
+                shoppingCart.setUserId(BaseContext.getCurrentId());
+                shoppingCart.setSetmealId(detail.getSetmealId());
+                shoppingCart.setName(detail.getName());
+                shoppingCart.setNumber(detail.getNumber());
+                shoppingCart.setAmount(detail.getAmount());
+                shoppingCart.setImage(detail.getImage());
+                shoppingCart.setCreateTime(LocalDateTime.now());
+                shoppingCartMapper.add(shoppingCart);
+            }
+        }
+
+
     }
 }

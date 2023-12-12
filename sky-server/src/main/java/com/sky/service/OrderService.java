@@ -22,4 +22,6 @@ public interface OrderService {
     OrderVO orderDetail(Integer id);
 
     void cancel(Integer id);
+
+    void repetition(Integer id);
 }
