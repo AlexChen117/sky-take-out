@@ -1,8 +1,11 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author Alex
@@ -18,4 +21,7 @@ public interface OrderMapper {
     Orders findOrderByNumber(String number);
 
     void updateById(Orders orders);
+
+    @Select("select * from orders where user_id = #{currentId}")
+    Page<Orders> findOrderByUserId(Long currentId);
 }

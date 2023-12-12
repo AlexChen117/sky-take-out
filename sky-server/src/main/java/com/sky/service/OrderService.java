@@ -1,7 +1,12 @@
 package com.sky.service;
 
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.result.PageResult;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrdersVO;
+
+import java.util.List;
 
 /**
  * @author Alex
@@ -13,4 +18,6 @@ public interface OrderService {
     OrderSubmitVO submit(OrdersSubmitDTO submitDTO);
 
     void paySuccess(String number);
+
+    PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO);
 }

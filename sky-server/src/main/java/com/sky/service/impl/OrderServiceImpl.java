@@ -1,7 +1,10 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.AddressBook;
 import com.sky.entity.OrderDetail;
@@ -13,17 +16,20 @@ import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.mapper.UserAddressMapper;
+import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.sky.vo.OrdersVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 
 
 /**
@@ -107,6 +113,11 @@ public class OrderServiceImpl implements OrderService {
         return orderSubmitVO;
     }
 
+    /**
+     * 模拟微信支付成功
+     *
+     * @param number
+     */
     @Override
     public void paySuccess(String number) {
         Orders orders = orderMapper.findOrderByNumber(number);
@@ -115,5 +126,26 @@ public class OrderServiceImpl implements OrderService {
         orders.setPayStatus(Orders.PAID);
         orderMapper.updateById(orders);
 
+    }
+
+    /**
+     * C端历史订单查询
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId());
+        List<OrdersVO> collect = orders.getResult().stream().map(
+                order -> {
+                    OrdersVO ordersVO = new OrdersVO();
+                    BeanUtils.copyProperties(order, ordersVO);
+                    ordersVO.setOrderDetailList(orderDetailMapper.findByOrdersId(ordersVO.getId()));
+                    return ordersVO;
+                }
+        ).collect(Collectors.toList());
+        return new PageResult(orders.getTotal(), collect);
     }
 }
