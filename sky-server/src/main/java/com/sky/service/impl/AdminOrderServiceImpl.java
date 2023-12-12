@@ -1,0 +1,49 @@
+package com.sky.service.impl;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.entity.Orders;
+import com.sky.mapper.AdminOrderMapper;
+import com.sky.mapper.OrderMapper;
+import com.sky.result.PageResult;
+import com.sky.service.AdminOrderService;
+import com.sky.vo.OrderVO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @author Alex
+ * @version 1.0
+ * @project sky-take-out
+ * @date 2023/12/12 20:19:35
+ */
+@Service
+@RequiredArgsConstructor
+public class AdminOrderServiceImpl implements AdminOrderService {
+    private final AdminOrderMapper adminOrderMapper;
+    private final OrderMapper orderMapper;
+
+    /**
+     * 订单搜索
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Page<Orders> orders = adminOrderMapper.findOrders(ordersPageQueryDTO);
+        List<OrderVO> collect = orders.getResult().stream().map(order -> {
+            OrderVO vo = new OrderVO();
+            BeanUtils.copyProperties(order, vo);
+            return vo;
+        }).collect(Collectors.toList());
+        return new PageResult(orders.getTotal(),collect);
+    }
+}
