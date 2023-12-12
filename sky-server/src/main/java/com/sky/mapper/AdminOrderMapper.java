@@ -18,4 +18,6 @@ public interface AdminOrderMapper {
 
     @Select("select count(*) from orders where status = #{status};")
     Integer findOrdersByStatus(Integer status);
+
+    void update(Orders orders);
 }

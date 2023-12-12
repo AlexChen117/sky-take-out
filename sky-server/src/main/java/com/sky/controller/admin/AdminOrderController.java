@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersRejectionDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.AdminOrderService;
@@ -8,9 +9,7 @@ import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,5 +51,18 @@ public class AdminOrderController {
         log.info("各个状态的订单数量统计");
         OrderStatisticsVO orderStatisticsVO = adminOrderService.statistics();
         return Result.success(orderStatisticsVO);
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param ordersRejectionDTO
+     * @return
+     */
+    @PutMapping("/cancel")
+    public Result<?> cancel(@RequestBody OrdersRejectionDTO ordersRejectionDTO) {
+        log.info("取消订单");
+        adminOrderService.cancel(ordersRejectionDTO);
+        return Result.success();
     }
 }
