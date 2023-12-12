@@ -36,7 +36,7 @@ public class AdminOrderController {
     @GetMapping("/conditionSearch")
     public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
         log.info("订单搜索");
-        System.out.println(ordersPageQueryDTO.getStatus());
+        //System.out.println(ordersPageQueryDTO.getStatus());
         PageResult orderVOList = adminOrderService.conditionSearch(ordersPageQueryDTO);
         //System.out.println(orderVOList);
         return Result.success(orderVOList);
@@ -116,5 +116,18 @@ public class AdminOrderController {
         log.info("拒单");
         adminOrderService.rejection(ordersRejectionDTO);
         return Result.success();
+    }
+
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/details/{id}")
+    public Result<OrderVO> details(@PathVariable Long id) {
+        log.info("查询订单详情");
+        OrderVO vo = adminOrderService.details(id);
+        return Result.success(vo);
     }
 }

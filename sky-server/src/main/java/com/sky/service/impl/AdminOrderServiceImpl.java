@@ -2,10 +2,12 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersRejectionDTO;
+import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.mapper.AdminOrderMapper;
 import com.sky.mapper.OrderMapper;
@@ -109,6 +111,9 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Orders orders = new Orders();
         orders.setId(id);
         orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
+        orders.setDeliveryTime(LocalDateTime.now());
+        orders.setEstimatedDeliveryTime(LocalDateTime.now());
+        orders.setDeliveryStatus(1);
         adminOrderMapper.update(orders);
     }
 
@@ -125,5 +130,21 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         orders.setCancelTime(LocalDateTime.now());
         orders.setCancelReason(ordersRejectionDTO.getRejectionReason());
         adminOrderMapper.update(orders);
+    }
+
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public OrderVO details(Long id) {
+        Orders orders = adminOrderMapper.findOrdersById(id);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders,orderVO);
+        List<OrderDetail> list=adminOrderMapper.findOrderDetailsByOrderId(id);
+        orderVO.setOrderDetailList(list);
+        return orderVO;
     }
 }

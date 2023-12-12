@@ -29,4 +29,6 @@ public interface AdminOrderService {
     void delivery(Long id);
 
     void rejection(OrdersRejectionDTO ordersRejectionDTO);
+
+    OrderVO details(Long id);
 }

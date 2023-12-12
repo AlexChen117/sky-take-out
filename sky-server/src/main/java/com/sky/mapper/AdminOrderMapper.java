@@ -2,9 +2,12 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author Alex
@@ -20,4 +23,11 @@ public interface AdminOrderMapper {
     Integer findOrdersByStatus(Integer status);
 
     void update(Orders orders);
+
+    @Select("select * from orders where id = #{id}")
+    Orders findOrdersById(Long id);
+
+    @Select("select * from order_detail where order_id = #{id}")
+    List<OrderDetail> findOrderDetailsByOrderId(Long id);
+
 }
