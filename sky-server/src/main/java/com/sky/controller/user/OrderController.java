@@ -69,12 +69,26 @@ public class OrderController {
 
     /**
      * 催单
+     *
      * @param id
      * @return
      */
     @GetMapping("/reminder/{id}")
     public Result<?> reminder(@PathVariable Integer id) {
         log.info("催单");
+
+        return Result.success();
+    }
+
+    /**
+     * 再来一单
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("repetition/{id}")
+    public Result<?> repetition(@PathVariable Integer id) {
+        log.info("再来一单");
 
         return Result.success();
     }
