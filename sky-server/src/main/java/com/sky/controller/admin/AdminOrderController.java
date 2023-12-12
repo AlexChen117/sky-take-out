@@ -74,7 +74,7 @@ public class AdminOrderController {
      * @return
      */
     @PutMapping("complete/{id}")
-    public Result<?> complete(@PathVariable Integer id) {
+    public Result<?> complete(@PathVariable Long id) {
         log.info("完成订单");
         adminOrderService.complete(id);
         return Result.success();
@@ -90,6 +90,19 @@ public class AdminOrderController {
     public Result<?> confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO) {
         log.info("接单");
         adminOrderService.confirm(ordersConfirmDTO);
+        return Result.success();
+    }
+
+    /**
+     * 派送订单
+     *
+     * @param id
+     * @return
+     */
+    @PutMapping("delivery/{id}")
+    public Result<?> delivery(@PathVariable Long id) {
+        log.info("派送订单");
+        adminOrderService.delivery(id);
         return Result.success();
     }
 }

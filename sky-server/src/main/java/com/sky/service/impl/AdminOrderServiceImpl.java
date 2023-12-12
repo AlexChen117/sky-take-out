@@ -78,9 +78,9 @@ public class AdminOrderServiceImpl implements AdminOrderService {
      * @param id
      */
     @Override
-    public void complete(Integer id) {
+    public void complete(Long id) {
         Orders orders = new Orders();
-        orders.setId(Long.valueOf(id));
+        orders.setId(id);
         orders.setStatus(Orders.COMPLETED);
         adminOrderMapper.update(orders);
     }
@@ -95,6 +95,18 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Orders orders = new Orders();
         orders.setId(ordersConfirmDTO.getId());
         orders.setStatus(Orders.CONFIRMED);
+        adminOrderMapper.update(orders);
+    }
+
+    /**
+     * 派送
+     * @param id
+     */
+    @Override
+    public void delivery(Long id) {
+        Orders orders = new Orders();
+        orders.setId(id);
+        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
         adminOrderMapper.update(orders);
     }
 }

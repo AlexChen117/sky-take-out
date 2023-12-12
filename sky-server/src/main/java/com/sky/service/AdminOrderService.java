@@ -22,7 +22,9 @@ public interface AdminOrderService {
 
     void cancel(OrdersRejectionDTO ordersRejectionDTO);
 
-    void complete(Integer id);
+    void complete(Long id);
 
     void confirm(OrdersConfirmDTO ordersConfirmDTO);
+
+    void delivery(Long id);
 }
