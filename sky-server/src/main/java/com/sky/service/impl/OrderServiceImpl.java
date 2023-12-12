@@ -15,17 +15,15 @@ import com.sky.mapper.ShoppingCartMapper;
 import com.sky.mapper.UserAddressMapper;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 
 
 /**
@@ -73,6 +71,9 @@ public class OrderServiceImpl implements OrderService {
             BigDecimal multiply = cart.getAmount().multiply(new BigDecimal(cart.getNumber()));
             decimal = decimal.add(multiply);
         }
+        //decimal = shoppingCarts.stream()
+        //        .map(shoppingCart -> shoppingCart.getAmount().multiply(new BigDecimal(shoppingCart.getNumber()))
+        //        ).reduce(decimal, BigDecimal::add);
         orders.setAmount(decimal);
         orders.setRemark(submitDTO.getRemark());
         orders.setUserName(addressBook.getConsignee());
@@ -104,5 +105,15 @@ public class OrderServiceImpl implements OrderService {
         orderSubmitVO.setOrderAmount(orders.getAmount());
         orderSubmitVO.setOrderTime(orders.getOrderTime());
         return orderSubmitVO;
+    }
+
+    @Override
+    public void paySuccess(String number) {
+        Orders orders = orderMapper.findOrderByNumber(number);
+        orders.setStatus(Orders.TO_BE_CONFIRMED);
+        orders.setCheckoutTime(LocalDateTime.now());
+        orders.setPayStatus(Orders.PAID);
+        orderMapper.updateById(orders);
+
     }
 }

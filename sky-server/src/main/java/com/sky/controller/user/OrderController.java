@@ -6,10 +6,7 @@ import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 订单管理
@@ -26,10 +23,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final OrderService orderService;
 
+    /**
+     * 提交订单
+     *
+     * @param submitDTO
+     * @return
+     */
     @PostMapping("/submit")
     public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO submitDTO) {
         log.info("提交订单");
         OrderSubmitVO orderSubmitVO = orderService.submit(submitDTO);
         return Result.success(orderSubmitVO);
+    }
+
+    /**
+     * 支付成功
+     * @param number
+     * @return
+     */
+    @PutMapping("/paySuccess/{number}")
+    public Result<?> paySuccess(@PathVariable String number) {
+        log.info("支付成功");
+        orderService.paySuccess(number);
+        return Result.success();
     }
 }
