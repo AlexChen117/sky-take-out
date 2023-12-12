@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
-        Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId());
+        Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId(),ordersPageQueryDTO.getStatus());
         List<OrderVO> collect = orders.getResult().stream().map(
                 order -> {
                     OrderVO orderVO = new OrderVO();

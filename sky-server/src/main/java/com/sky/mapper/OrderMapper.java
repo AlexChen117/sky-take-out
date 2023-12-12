@@ -22,9 +22,10 @@ public interface OrderMapper {
 
     void updateById(Orders orders);
 
-    @Select("select * from orders where user_id = #{currentId}")
-    Page<Orders> findOrderByUserId(Long currentId);
+
 
     @Select("select * from orders where id = #{id};")
     Orders findOrderById(Integer id);
+
+    Page<Orders> findOrderByUserId(Long currentId, Integer status);
 }
