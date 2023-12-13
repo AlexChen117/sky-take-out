@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.dto.OrdersCancelDTO;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersRejectionDTO;
@@ -46,6 +47,12 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         List<OrderVO> collect = orders.getResult().stream().map(order -> {
             OrderVO vo = new OrderVO();
             BeanUtils.copyProperties(order, vo);
+            StringBuilder cjj = new StringBuilder();
+            List<OrderDetail> list = adminOrderMapper.findOrderDetailsByOrderId(vo.getId());
+            for (OrderDetail orderDetail : list) {
+                cjj.append(orderDetail.getName()).append("*").append(orderDetail.getNumber()).append(System.lineSeparator());
+            }
+            vo.setOrderDishes(cjj.toString());
             return vo;
         }).collect(Collectors.toList());
         return new PageResult(orders.getTotal(), collect);
@@ -68,14 +75,14 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     /**
      * 取消订单
      *
-     * @param ordersRejectionDTO
+     * @param ordersCancelDTO
      */
     @Override
-    public void cancel(OrdersRejectionDTO ordersRejectionDTO) {
+    public void cancel(OrdersCancelDTO ordersCancelDTO) {
         Orders orders = new Orders();
-        orders.setId(ordersRejectionDTO.getId());
+        orders.setId(ordersCancelDTO.getId());
         orders.setStatus(Orders.CANCELLED);
-        orders.setCancelReason(ordersRejectionDTO.getRejectionReason());
+        orders.setCancelReason(ordersCancelDTO.getCancelReason());
         orders.setCancelTime(LocalDateTime.now());
         adminOrderMapper.update(orders);
     }
