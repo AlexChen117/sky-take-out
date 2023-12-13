@@ -2,15 +2,12 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sky.constant.MessageConstant;
-import com.sky.context.BaseContext;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersRejectionDTO;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.mapper.AdminOrderMapper;
-import com.sky.mapper.OrderMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
 import com.sky.vo.OrderStatisticsVO;
@@ -19,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,12 +65,18 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return orderStatisticsVO;
     }
 
+    /**
+     * 取消订单
+     *
+     * @param ordersRejectionDTO
+     */
     @Override
     public void cancel(OrdersRejectionDTO ordersRejectionDTO) {
         Orders orders = new Orders();
         orders.setId(ordersRejectionDTO.getId());
         orders.setStatus(Orders.CANCELLED);
         orders.setCancelReason(ordersRejectionDTO.getRejectionReason());
+        orders.setCancelTime(LocalDateTime.now());
         adminOrderMapper.update(orders);
     }
 
@@ -85,6 +90,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Orders orders = new Orders();
         orders.setId(id);
         orders.setStatus(Orders.COMPLETED);
+        orders.setDeliveryTime(LocalDateTime.now());
         adminOrderMapper.update(orders);
     }
 
@@ -111,8 +117,9 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Orders orders = new Orders();
         orders.setId(id);
         orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
-        orders.setDeliveryTime(LocalDateTime.now());
-        orders.setEstimatedDeliveryTime(LocalDateTime.now());
+        long timeMillis = System.currentTimeMillis() + 720000;
+        Instant instant = Instant.ofEpochMilli(timeMillis);
+        orders.setEstimatedDeliveryTime(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
         orders.setDeliveryStatus(1);
         adminOrderMapper.update(orders);
     }
@@ -142,8 +149,8 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     public OrderVO details(Long id) {
         Orders orders = adminOrderMapper.findOrdersById(id);
         OrderVO orderVO = new OrderVO();
-        BeanUtils.copyProperties(orders,orderVO);
-        List<OrderDetail> list=adminOrderMapper.findOrderDetailsByOrderId(id);
+        BeanUtils.copyProperties(orders, orderVO);
+        List<OrderDetail> list = adminOrderMapper.findOrderDetailsByOrderId(id);
         orderVO.setOrderDetailList(list);
         return orderVO;
     }
