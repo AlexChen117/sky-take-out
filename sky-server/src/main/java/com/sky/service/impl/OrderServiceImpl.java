@@ -10,6 +10,7 @@ import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
+import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
@@ -212,5 +213,22 @@ public class OrderServiceImpl implements OrderService {
                 shoppingCartMapper.add(shoppingCart);
             }
         }
+    }
+
+    /**
+     * 催单
+     * @param id
+     */
+    @Override
+    public void reminder(Integer id) {
+        Orders order = orderMapper.findOrderById(id);
+        if (Objects.isNull(order)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", 2);
+        jsonObject.put("orderId", order.getId());
+        jsonObject.put("content", order.getNumber());
+        socketServer.sendToAllClient(jsonObject.toJSONString());
     }
 }

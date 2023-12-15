@@ -73,7 +73,7 @@ public class OrderController {
     @GetMapping("/reminder/{id}")
     public Result<?> reminder(@PathVariable Integer id) {
         log.info("催单");
-
+        orderService.reminder(id);
         return Result.success();
     }
 

@@ -24,4 +24,6 @@ public interface OrderService {
     void cancel(Integer id);
 
     void repetition(Integer id);
+
+    void reminder(Integer id);
 }
