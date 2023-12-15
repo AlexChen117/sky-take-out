@@ -35,4 +35,6 @@ public interface AdminOrderMapper {
     List<Orders> findTimeOutOrder(LocalDateTime time);
 
     void updateOutTimeOrder();
+
+    void updateCompleteOrders();
 }

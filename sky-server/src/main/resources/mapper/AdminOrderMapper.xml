@@ -40,6 +40,11 @@
           and status = 1
           and pay_status = 0
     </update>
+    <update id="updateCompleteOrders">
+        update orders
+        set status = 5
+        where status = 4
+    </update>
 
     <select id="findOrders" resultType="com.sky.entity.Orders">
         select id, number, status, user_id, address_book_id, order_time, checkout_time, pay_method, pay_status, amount,

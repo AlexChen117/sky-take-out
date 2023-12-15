@@ -24,6 +24,9 @@ import java.util.List;
 public class OrdersTask {
     private final AdminOrderMapper adminOrderMapper;
 
+    /**
+     * 自动取消订单
+     */
     @Scheduled(cron = "0 * * * * ?")
     public void autoCancelOutTimeOrder() {
         log.info("----------自动取消订单:开始----------");
@@ -42,5 +45,15 @@ public class OrdersTask {
         }
         //adminOrderMapper.updateOutTimeOrder();
         log.info("----------自动取消订单:结束----------");
+    }
+
+    /**
+     * 自动完成订单
+     */
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void autoCompleteOrders() {
+        log.info("----------自动完成订单:开始----------");
+        adminOrderMapper.updateCompleteOrders();
+        log.info("----------自动完成订单:结束----------");
     }
 }

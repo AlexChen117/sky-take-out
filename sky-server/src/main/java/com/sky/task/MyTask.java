@@ -1,5 +1,7 @@
 package com.sky.task;
 
+import com.sky.config.WebSocketServer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,11 +15,13 @@ import org.springframework.stereotype.Component;
  * @date 2023/12/15 09:24:46
  */
 
-//@Component
+@Component
 @Slf4j
+@RequiredArgsConstructor
 public class MyTask {
+    private final WebSocketServer socketServer;
     @Scheduled(cron = "* * * * * ?")
     public void taskTest() {
-        log.info("陈俊杰是沙雕");
+        socketServer.sendToAllClient("陈俊杰sb");
     }
 }
