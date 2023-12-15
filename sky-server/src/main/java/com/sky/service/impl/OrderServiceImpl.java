@@ -1,7 +1,9 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.config.WebSocketServer;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.OrdersPageQueryDTO;
@@ -40,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserAddressMapper addressMapper;
     private final ShoppingCartMapper shoppingCartMapper;
     private final OrderDetailMapper orderDetailMapper;
+    private final WebSocketServer socketServer;
 
     @Override
     public OrderSubmitVO submit(OrdersSubmitDTO submitDTO) {
@@ -121,7 +124,12 @@ public class OrderServiceImpl implements OrderService {
         orders.setCheckoutTime(LocalDateTime.now());
         orders.setPayStatus(Orders.PAID);
         orderMapper.updateById(orders);
-
+        //向管理端发送来单提醒
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", 1);
+        jsonObject.put("orderId", orders.getId());
+        jsonObject.put("content", orders.getNumber());
+        socketServer.sendToAllClient(jsonObject.toJSONString());
     }
 
     /**
@@ -133,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
-        Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId(),ordersPageQueryDTO.getStatus());
+        Page<Orders> orders = orderMapper.findOrderByUserId(BaseContext.getCurrentId(), ordersPageQueryDTO.getStatus());
         List<OrderVO> collect = orders.getResult().stream().map(
                 order -> {
                     OrderVO orderVO = new OrderVO();

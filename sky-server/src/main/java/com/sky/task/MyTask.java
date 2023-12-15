@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component;
  * @date 2023/12/15 09:24:46
  */
 
-@Component
+//@Component
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class MyTask {
-    private final WebSocketServer socketServer;
+    private  WebSocketServer socketServer;
     @Scheduled(cron = "* * * * * ?")
     public void taskTest() {
-        socketServer.sendToAllClient("陈俊杰sb");
+        socketServer.sendToAllClient("陈俊杰是什么");
+        socketServer.sendToAllClient("陈俊杰是sb");
     }
 }
