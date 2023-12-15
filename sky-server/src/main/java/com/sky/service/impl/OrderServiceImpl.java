@@ -40,8 +40,6 @@ public class OrderServiceImpl implements OrderService {
     private final UserAddressMapper addressMapper;
     private final ShoppingCartMapper shoppingCartMapper;
     private final OrderDetailMapper orderDetailMapper;
-    private final DishMapper dishMapper;
-    private final SetMealMapper setMealMapper;
 
     @Override
     public OrderSubmitVO submit(OrdersSubmitDTO submitDTO) {
@@ -84,7 +82,8 @@ public class OrderServiceImpl implements OrderService {
         String address = addressBook.getProvinceName() + addressBook.getCityName() + addressBook.getDistrictName() + addressBook.getDetail();
         orders.setAddress(address);
         orders.setConsignee(addressBook.getConsignee());
-        orders.setEstimatedDeliveryTime(LocalDateTime.now());
+        LocalDateTime time = LocalDateTime.now().plusMinutes(45L);
+        orders.setEstimatedDeliveryTime(time);
         orders.setDeliveryStatus(0);
         orders.setPackAmount(submitDTO.getPackAmount());
         orders.setTablewareNumber(submitDTO.getTablewareNumber());
@@ -181,8 +180,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void repetition(Integer id) {
         List<OrderDetail> orderDetail = orderDetailMapper.findByOrdersId(Long.valueOf(id));
-        ArrayList<Dish> dishList = new ArrayList<>();
-        ArrayList<Setmeal> setmealList = new ArrayList<>();
         for (OrderDetail detail : orderDetail) {
             if (detail.getDishId() != null && detail.getSetmealId() == null) {
                 ShoppingCart shoppingCart = new ShoppingCart();
@@ -207,7 +204,5 @@ public class OrderServiceImpl implements OrderService {
                 shoppingCartMapper.add(shoppingCart);
             }
         }
-
-
     }
 }

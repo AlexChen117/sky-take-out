@@ -31,6 +31,15 @@
         </set>
         where id = #{id};
     </update>
+    <update id="updateOutTimeOrder">
+        update orders
+        set status        =6,
+            cancel_reason = '超时自动取消',
+            cancel_time   = now()
+        where order_time <![CDATA[<]]> (now() - INTERVAL 15 MINUTE)
+          and status = 1
+          and pay_status = 0
+    </update>
 
     <select id="findOrders" resultType="com.sky.entity.Orders">
         select id, number, status, user_id, address_book_id, order_time, checkout_time, pay_method, pay_status, amount,

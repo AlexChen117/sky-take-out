@@ -7,6 +7,7 @@ import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,4 +31,8 @@ public interface AdminOrderMapper {
     @Select("select * from order_detail where order_id = #{id}")
     List<OrderDetail> findOrderDetailsByOrderId(Long id);
 
+    @Select("select * from orders where order_time < #{time} and status =1 and pay_status = 0")
+    List<Orders> findTimeOutOrder(LocalDateTime time);
+
+    void updateOutTimeOrder();
 }
