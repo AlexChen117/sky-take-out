@@ -41,3 +41,7 @@ sky:
     user-secret-key: KKSKkksk
     user-token-name: authentication
     user-ttl: 7200000
+  shop:
+    address: 安徽省合肥市瑶海区长江东大街277号闽商国贸中心1期商业4楼
+  baidu:
+    ak: TvSpcrwge6lgSz7fD1UAUAkYyGh2xqST

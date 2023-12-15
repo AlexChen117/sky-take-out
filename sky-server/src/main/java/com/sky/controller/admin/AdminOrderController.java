@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * @author Alex
  * @version 1.0
