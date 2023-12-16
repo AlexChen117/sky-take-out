@@ -9,11 +9,11 @@ import com.sky.dto.OrdersRejectionDTO;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.mapper.AdminOrderMapper;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
 import com.sky.vo.*;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 
 
 /**
@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 public class AdminOrderServiceImpl implements AdminOrderService {
     private final AdminOrderMapper adminOrderMapper;
     private final UserMapper userMapper;
+    private final OrderDetailMapper orderDetailMapper;
 
     /**
      * 订单搜索
@@ -231,6 +232,23 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         orderReportVO.setValidOrderCount(completeNumber.intValue());
         orderReportVO.setOrderCompletionRate(decimal.doubleValue());
         return orderReportVO;
+    }
+
+    /**
+     * top10
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public SalesTop10ReportVO top10(LocalDate begin, LocalDate end) {
+        List<Map<String, Object>> mapList = orderDetailMapper.top10(begin,end);
+        String nameList = mapList.stream().map(item -> (String) item.get("name")).collect(Collectors.joining(","));
+        String countList = mapList.stream().map(item -> (Long) item.get("count")).map(Object::toString).collect(Collectors.joining(","));
+        SalesTop10ReportVO salesTop10ReportVO = new SalesTop10ReportVO();
+        salesTop10ReportVO.setNameList(nameList);
+        salesTop10ReportVO.setNumberList(countList);
+        return salesTop10ReportVO;
     }
 
     /**

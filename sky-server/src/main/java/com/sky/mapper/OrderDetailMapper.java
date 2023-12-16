@@ -4,7 +4,9 @@ import com.sky.entity.OrderDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -18,4 +20,6 @@ public interface OrderDetailMapper {
 
     @Select("select * from order_detail where order_id = #{id};")
     List<OrderDetail> findByOrdersId(Long id);
+
+    List<Map<String, Object>> top10(LocalDate begin, LocalDate end);
 }

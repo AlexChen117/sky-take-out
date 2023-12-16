@@ -11,4 +11,17 @@
             #{orderDetail.setmealId},#{orderDetail.dishFlavor},#{orderDetail.number},#{orderDetail.amount})
         </foreach>
     </insert>
+    <select id="top10" resultType="java.util.Map">
+        select temp.name, temp.count
+        from (select od.name, count(*) count
+              from order_detail od,
+                   orders o
+              where od.order_id = o.id
+                and o.status = 5
+                and od.dish_id is not null
+                and o.order_time between #{begin} and #{end}
+              group by od.name) temp
+        order by temp.count desc
+        limit 10
+    </select>
 </mapper>
