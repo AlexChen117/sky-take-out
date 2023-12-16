@@ -5,6 +5,7 @@ import com.sky.result.PageResult;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,4 +34,6 @@ public interface AdminOrderService {
     OrderVO details(Long id);
 
     TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end);
+
+    UserReportVO userStatistics(LocalDate begin, LocalDate end);
 }

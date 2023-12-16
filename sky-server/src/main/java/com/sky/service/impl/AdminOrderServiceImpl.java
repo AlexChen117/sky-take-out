@@ -9,11 +9,13 @@ import com.sky.dto.OrdersRejectionDTO;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import com.sky.mapper.AdminOrderMapper;
+import com.sky.mapper.UserMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminOrderServiceImpl implements AdminOrderService {
     private final AdminOrderMapper adminOrderMapper;
+    private final UserMapper userMapper;
 
     /**
      * 订单搜索
@@ -167,15 +171,43 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return orderVO;
     }
 
+    /**
+     * 营业额统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
     @Override
     public TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end) {
         List<Map<String, Object>> list = adminOrderMapper.turnoverStatistics(begin, end);
-        String day = list.stream()
-                .map(item -> (String) item.get("day"))
-                .collect(Collectors.joining(","));
-        String turnover = list.stream()
-                .map(item -> (BigDecimal) item.get("turnover"))
-                .map(BigDecimal::toString).collect(Collectors.joining(","));
+        String day = list.stream().map(item -> (String) item.get("day")).collect(Collectors.joining(","));
+        String turnover = list.stream().map(item -> (BigDecimal) item.get("turnover")).map(BigDecimal::toString).collect(Collectors.joining(","));
         return new TurnoverReportVO(day, turnover);
+    }
+
+    /**
+     * 用户统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
+        ArrayList<LocalDate> list = new ArrayList<>();
+        list.add(begin);
+        while (true) {
+            begin = begin.plusDays(1L);
+            if (begin.isAfter(end)) {
+                break;
+            }
+            list.add(begin);
+        }
+        List<Map<String, Object>> map = userMapper.userStatistics(list);
+        String day = map.stream().map(item -> (String) item.get("day")).collect(Collectors.joining(","));
+        String allCount = map.stream().map(item -> item.get("all_count")).map(Object::toString).collect(Collectors.joining(","));
+        String userCount = map.stream().map(item -> item.get("user_count")).map(Object::toString).collect(Collectors.joining(","));
+        return new UserReportVO(day, allCount, userCount);
     }
 }

@@ -7,6 +7,21 @@
         values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
     </insert>
     <select id="selectOne" resultType="com.sky.entity.User">
-        select * from user where openid =#{openid}
+        select *
+        from user
+        where openid = #{openid}
+    </select>
+    <select id="userStatistics" resultType="java.util.Map">
+        select temp2.day,
+        (select count(*) count from user where DATE(create_time)= temp2.day ) user_count,
+        (select count(*) all_count from user where DATE(create_time) &lt;= temp2.day) all_count
+        from (
+        <foreach collection="list" item="item" separator="union" index="index">
+            select #{item}
+            <if test="index == 0">
+                day
+            </if>
+        </foreach>
+        ) as temp2
     </select>
 </mapper>
