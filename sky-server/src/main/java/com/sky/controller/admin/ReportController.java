@@ -1,8 +1,8 @@
 package com.sky.controller.admin;
 
-import com.sky.dto.DataOverViewQueryDTO;
 import com.sky.result.Result;
 import com.sky.service.AdminOrderService;
+import com.sky.vo.OrderReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import lombok.RequiredArgsConstructor;
@@ -44,15 +44,31 @@ public class ReportController {
 
     /**
      * 用户统计接口
+     *
      * @param begin
      * @param end
      * @return
      */
     @GetMapping("/userStatistics")
     public Result<UserReportVO> userStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end){
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("用户统计接口");
         UserReportVO userReportVO = adminOrderService.userStatistics(begin, end);
         return Result.success(userReportVO);
+    }
+
+    /**
+     * 订单统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    @GetMapping("/ordersStatistics")
+    public Result<OrderReportVO> ordersStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        log.info("订单统计接口");
+        OrderReportVO orderReportVO = adminOrderService.ordersStatistics(begin, end);
+        return Result.success(orderReportVO);
     }
 }

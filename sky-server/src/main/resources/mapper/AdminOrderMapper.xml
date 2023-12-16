@@ -127,6 +127,27 @@
                     select 30) as temp) as temp_tab
         where temp_tab.day between #{begin} and #{end}
     </select>
+    <select id="ordersStatistics" resultType="java.util.Map">
+        select tab.total_number, tab.complete_number, ROUND(tab.complete_number / tab.total_number, 4) round
+        from (select count(*)                                    total_number,
+                     count(if(pay_status = 1, pay_status, null)) valid_number,
+                     count(if(status = 5, status, null))         complete_number
+              from orders
+              where order_time between #{begin} and #{end}) tab;
+    </select>
+    <select id="ordersStatisticsNumber" resultType="java.util.Map">
+        select temp.day,count(orders.id) total , count(if(status=5,status,null)) valid_number
+        from (
+        <foreach collection="list" item="item" separator="union" index="index">
+            select #{item}
+            <if test="index == 0">
+                day
+            </if>
+        </foreach>
+        ) as temp
+        left join orders on DATE(orders.order_time)=temp.day
+        group by temp.day
+    </select>
 </mapper>
 
 

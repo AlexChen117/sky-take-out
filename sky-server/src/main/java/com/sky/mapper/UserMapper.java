@@ -27,6 +27,5 @@ public interface UserMapper {
      * @param list
      * @return
      */
-    @MapKey("user")
     List<Map<String, Object>> userStatistics(ArrayList<LocalDate> list);
 }

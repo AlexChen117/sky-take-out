@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,10 @@ public interface AdminOrderMapper {
 
     void updateCompleteOrders();
 
-    @MapKey("day")
     List<Map<String, Object>> turnoverStatistics(LocalDate begin, LocalDate end);
+
+
+    Map<String, Object> ordersStatistics(LocalDate begin, LocalDate end);
+
+    List<Map<String, Object>> ordersStatisticsNumber(ArrayList<LocalDate> localDates);
 }

@@ -12,13 +12,7 @@ import com.sky.mapper.AdminOrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
-import com.sky.vo.OrderStatisticsVO;
-import com.sky.vo.OrderVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
+import com.sky.vo.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -26,9 +20,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
 
 /**
  * @author Alex
@@ -195,6 +195,52 @@ public class AdminOrderServiceImpl implements AdminOrderService {
      */
     @Override
     public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
+        ArrayList<LocalDate> list = getLocalDates(begin, end);
+        List<Map<String, Object>> map = userMapper.userStatistics(list);
+        String day = map.stream().map(item -> (String) item.get("day")).collect(Collectors.joining(","));
+        String allCount = map.stream().map(item -> item.get("all_count")).map(Object::toString).collect(Collectors.joining(","));
+        String userCount = map.stream().map(item -> item.get("user_count")).map(Object::toString).collect(Collectors.joining(","));
+        return new UserReportVO(day, allCount, userCount);
+    }
+
+    /**
+     * 订单统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public OrderReportVO ordersStatistics(LocalDate begin, LocalDate end) {
+        ArrayList<LocalDate> localDates = getLocalDates(begin, end);
+        List<Map<String, Object>> mapList = adminOrderMapper.ordersStatisticsNumber(localDates);
+        String dateList = mapList.stream().map(item -> (String) item.get("day")).collect(Collectors.joining(","));
+        String orderCountList = mapList.stream().map(item -> item.get("total")).map(Object::toString).collect(Collectors.joining(","));
+        String validOrderCountList = mapList.stream().map(item -> item.get("valid_number")).map(Object::toString).collect(Collectors.joining(","));
+
+        Map<String, Object> map = adminOrderMapper.ordersStatistics(begin, end);
+        Long totalNumber = (Long) map.get("total_number");
+        Long completeNumber = (Long) map.get("complete_number");
+        BigDecimal decimal = (BigDecimal) map.get("round");
+
+        OrderReportVO orderReportVO = new OrderReportVO();
+        orderReportVO.setDateList(dateList);
+        orderReportVO.setOrderCountList(orderCountList);
+        orderReportVO.setValidOrderCountList(validOrderCountList);
+        orderReportVO.setTotalOrderCount(totalNumber.intValue());
+        orderReportVO.setValidOrderCount(completeNumber.intValue());
+        orderReportVO.setOrderCompletionRate(decimal.doubleValue());
+        return orderReportVO;
+    }
+
+    /**
+     * 产生时间列表
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    private static ArrayList<LocalDate> getLocalDates(LocalDate begin, LocalDate end) {
         ArrayList<LocalDate> list = new ArrayList<>();
         list.add(begin);
         while (true) {
@@ -204,10 +250,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
             }
             list.add(begin);
         }
-        List<Map<String, Object>> map = userMapper.userStatistics(list);
-        String day = map.stream().map(item -> (String) item.get("day")).collect(Collectors.joining(","));
-        String allCount = map.stream().map(item -> item.get("all_count")).map(Object::toString).collect(Collectors.joining(","));
-        String userCount = map.stream().map(item -> item.get("user_count")).map(Object::toString).collect(Collectors.joining(","));
-        return new UserReportVO(day, allCount, userCount);
+        return list;
     }
 }
