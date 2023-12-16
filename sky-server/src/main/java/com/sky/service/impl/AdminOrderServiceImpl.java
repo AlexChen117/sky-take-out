@@ -13,14 +13,18 @@ import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderVO;
+import com.sky.vo.TurnoverReportVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -161,5 +165,17 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         List<OrderDetail> list = adminOrderMapper.findOrderDetailsByOrderId(id);
         orderVO.setOrderDetailList(list);
         return orderVO;
+    }
+
+    @Override
+    public TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end) {
+        List<Map<String, Object>> list = adminOrderMapper.turnoverStatistics(begin, end);
+        String day = list.stream()
+                .map(item -> (String) item.get("day"))
+                .collect(Collectors.joining(","));
+        String turnover = list.stream()
+                .map(item -> (BigDecimal) item.get("turnover"))
+                .map(BigDecimal::toString).collect(Collectors.joining(","));
+        return new TurnoverReportVO(day, turnover);
     }
 }
