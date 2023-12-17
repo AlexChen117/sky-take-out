@@ -148,6 +148,53 @@
         left join orders on DATE(orders.order_time)=temp.day
         group by temp.day
     </select>
+    <select id="export" resultType="java.util.Map">
+        select ROUND(temp.complete / temp.paid, 2)                   as round,
+               temp.amount                                           as amount,
+               temp.avg                                              as avg,
+               temp.complete                                         as complete,
+               (select count(*)
+                from user
+                where DATE(create_time) between #{begin} and #{end}) as new_user
+        from (select ifnull(sum(if(status = 5, amount, null)), 0)                                         amount,
+                     (ifnull(sum(if(status = 5, amount, null)), 0) / count(if(status = 5, status, null))) avg,
+                     count(if(pay_status = 1, pay_status, null))                                          paid,
+                     count(if(status = 5, status, null))                                                  complete
+              from orders
+              where DATE(order_time) between #{begin} and #{end}) as temp
+    </select>
+    <select id="allExport" resultType="java.util.Map">
+        select temp2.day,
+        temp2.amount,
+        temp2.number_valid_orders,
+        ifnull(temp2.customer_unit_price, 0) customer_unit_price,
+        temp2.number_new_users,
+        ROUND(ifnull(temp2.number_completed_orders / temp2.number_valid_orders, 0) * 100, 2) order_completion_rate
+        from (select temp1.day,
+        (select ifnull(sum(if(status = 5, amount, null)), 0)
+        from orders
+        where date(order_time) = temp1.day) amount,
+        (select count(if(pay_status = 1, pay_status, null))
+        from orders
+        where date(order_time) = temp1.day) number_valid_orders,
+        (select count(if(status = 5, status, null))
+        from orders
+        where date(order_time) = temp1.day) number_completed_orders,
+        (select (ifnull(sum(if(status = 5, amount, null)), 0) / count(distinct user_id))
+        from orders
+        where date(order_time) = temp1.day) customer_unit_price,
+        (select count(*) count
+        from user
+        where date(create_time) = temp1.day) number_new_users
+        from (
+        <foreach collection="list" item="item" separator="union" index="index">
+            select #{item}
+            <if test="index == 0">
+                day
+            </if>
+        </foreach>
+        ) temp1) temp2
+    </select>
 </mapper>
 
 

@@ -4,6 +4,7 @@ import com.sky.dto.*;
 import com.sky.result.PageResult;
 import com.sky.vo.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,4 +38,6 @@ public interface AdminOrderService {
     OrderReportVO ordersStatistics(LocalDate begin, LocalDate end);
 
     SalesTop10ReportVO top10(LocalDate begin, LocalDate end);
+
+    void export(HttpServletResponse httpServletResponse);
 }

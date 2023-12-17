@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 /**
@@ -86,5 +87,10 @@ public class ReportController {
         log.info("top10菜品");
         SalesTop10ReportVO salesTop10ReportVO = adminOrderService.top10(begin, end);
         return Result.success(salesTop10ReportVO);
+    }
+
+    @GetMapping("/export")
+    public void export(HttpServletResponse httpServletResponse) {
+        adminOrderService.export(httpServletResponse);
     }
 }

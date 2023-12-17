@@ -14,7 +14,13 @@ import com.sky.mapper.UserMapper;
 import com.sky.result.PageResult;
 import com.sky.service.AdminOrderService;
 import com.sky.vo.*;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,10 +30,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -236,19 +247,116 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     /**
      * top10
+     *
      * @param begin
      * @param end
      * @return
      */
     @Override
     public SalesTop10ReportVO top10(LocalDate begin, LocalDate end) {
-        List<Map<String, Object>> mapList = orderDetailMapper.top10(begin,end);
+        List<Map<String, Object>> mapList = orderDetailMapper.top10(begin, end);
         String nameList = mapList.stream().map(item -> (String) item.get("name")).collect(Collectors.joining(","));
         String countList = mapList.stream().map(item -> (Long) item.get("count")).map(Object::toString).collect(Collectors.joining(","));
         SalesTop10ReportVO salesTop10ReportVO = new SalesTop10ReportVO();
         salesTop10ReportVO.setNameList(nameList);
         salesTop10ReportVO.setNumberList(countList);
         return salesTop10ReportVO;
+    }
+
+    @Override
+    public void export(HttpServletResponse httpServletResponse) {
+        try {
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("template/operationalDataReportTemplate.xlsx");
+            //将Excel写入内存
+            //Workbook wb = WorkbookFactory.create(
+            //        Files.newInputStream(
+            //                Paths.get(
+            //                        "D:\\BlackHorse\\ProjectPractice\\sky-take-out\\sky-take-out\\sky-server\\src\\main\\resources\\template\\operationalDataReportTemplate.xlsx")));
+            Workbook wb = WorkbookFactory.create(inputStream);
+            LocalDate now = LocalDate.now();
+            LocalDate yesterday = now.minusDays(1L);
+            LocalDate before30 = yesterday.minusDays(29L);
+            Map<String, Object> map = adminOrderMapper.export(before30, yesterday);
+            //订单完成率
+            BigDecimal round = (BigDecimal) map.get("round");
+            //营业额
+            BigDecimal amount = (BigDecimal) map.get("amount");
+            //平均客单价
+            BigDecimal avg = (BigDecimal) map.get("avg");
+            //有效订单
+            Long complete = (Long) map.get("complete");
+            //新增用户
+            Long newUser = (Long) map.get("new_user");
+
+
+            CellStyle cellStyle = wb.createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);//水平居中
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);//垂直居中
+            cellStyle.setBorderLeft(BorderStyle.THIN);//添加左边框
+
+            Sheet sheetAt = wb.getSheetAt(0);
+            Row row2 = sheetAt.createRow(1);
+            Row row4 = sheetAt.createRow(3);
+            Row row5 = sheetAt.createRow(4);
+            //日期
+            Cell cell22 = row2.createCell(1);
+            cell22.setCellStyle(cellStyle);
+            cell22.setCellValue("苍穹餐厅:" + before30 + "~" + yesterday);
+            //概览
+            Cell cell43 = row4.createCell(2);
+            Cell cell45 = row4.createCell(4);
+            Cell cell47 = row4.createCell(6);
+            Cell cell53 = row5.createCell(2);
+            Cell cell55 = row5.createCell(4);
+            cell43.setCellValue(amount.toString());
+            cell45.setCellValue(round.toString());
+            cell47.setCellValue(newUser.toString());
+            cell53.setCellValue(complete.toString());
+            cell55.setCellValue(avg.toString());
+            //明细数据
+            ArrayList<LocalDate> dates = getLocalDates(before30, yesterday);
+            List<Map<String, Object>> mapList = adminOrderMapper.allExport(dates);
+            for (int i = 7; i <= 36; i++) {
+                int index = i - 7;
+                Map<String, Object> objectMap = mapList.get(index);
+                Row row = sheetAt.createRow(i);
+                //日期
+                Cell cell2 = row.createCell(1);
+                cell2.setCellValue((String) objectMap.get("day"));
+                //营业额
+                Cell cell3 = row.createCell(2);
+                BigDecimal amount1 = (BigDecimal) objectMap.get("amount");
+                cell3.setCellValue(amount1.toString());
+                //有效订单
+                Cell cell4 = row.createCell(3);
+                Long numberValidOrders = (Long) objectMap.get("number_valid_orders");
+                cell4.setCellValue(numberValidOrders);
+                //订单完成率
+                Cell cell5 = row.createCell(4);
+                BigDecimal orderCompletionRate = (BigDecimal) objectMap.get("order_completion_rate");
+                cell5.setCellValue(orderCompletionRate.toString());
+                //平均客单价
+                Cell cell6 = row.createCell(5);
+                BigDecimal customerUnitPrice = (BigDecimal) objectMap.get("customer_unit_price");
+                cell6.setCellValue(customerUnitPrice.toString());
+                //新增用户数
+                Cell cell7 = row.createCell(6);
+                Long numberNewUsers = (Long) objectMap.get("number_new_users");
+                cell7.setCellValue(numberNewUsers);
+            }
+            //设置
+            httpServletResponse.reset();
+            httpServletResponse.setContentType("application/vnd.ms-excel");
+            httpServletResponse.setCharacterEncoding("utf-8");
+            ServletOutputStream outputStream = httpServletResponse.getOutputStream();
+            //将文件写入输出流
+            wb.write(outputStream);
+            //关闭流
+            wb.close();
+            outputStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

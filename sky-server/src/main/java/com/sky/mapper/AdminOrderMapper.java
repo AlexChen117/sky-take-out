@@ -48,4 +48,8 @@ public interface AdminOrderMapper {
     Map<String, Object> ordersStatistics(LocalDate begin, LocalDate end);
 
     List<Map<String, Object>> ordersStatisticsNumber(ArrayList<LocalDate> localDates);
+
+    Map<String, Object> export(LocalDate begin, LocalDate end);
+
+    List<Map<String, Object>> allExport(ArrayList<LocalDate> dates);
 }
