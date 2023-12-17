@@ -4,6 +4,7 @@ import com.sky.result.Result;
 import com.sky.service.WorkspaceService;
 import com.sky.vo.BusinessDataVO;
 import com.sky.vo.DishOverViewVO;
+import com.sky.vo.OrderOverViewVO;
 import com.sky.vo.SetmealOverViewVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,10 +55,27 @@ public class WorkspaceController {
         return Result.success(setmealOverViewVO);
     }
 
+    /**
+     * 查询菜品总览
+     *
+     * @return
+     */
     @GetMapping("/overviewDishes")
-    public Result<DishOverViewVO> overviewDishes(){
+    public Result<DishOverViewVO> overviewDishes() {
         log.info("查询菜品总览");
         DishOverViewVO dishOverViewVO = workspaceService.overviewDishes();
         return Result.success(dishOverViewVO);
+    }
+
+    /**
+     * 查询订单管理数据
+     *
+     * @return
+     */
+    @GetMapping("/overviewOrders")
+    public Result<OrderOverViewVO> overviewOrders() {
+        log.info("查询订单管理数据");
+        OrderOverViewVO orderOverViewVO = workspaceService.overviewOrders();
+        return Result.success(orderOverViewVO);
     }
 }

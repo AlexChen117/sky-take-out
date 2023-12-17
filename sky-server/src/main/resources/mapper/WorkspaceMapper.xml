@@ -16,4 +16,10 @@
         from (select count(*) sold from dish where status = 1) sold,
              (select count(*) discontinued from dish where status = 0) discontinued;
     </select>
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(*)
+        from orders
+        where status = #{status}
+          and order_time &gt; #{begin}
+    </select>
 </mapper>

@@ -19,4 +19,6 @@ public interface WorkspaceMapper {
     Map<String, Object> overviewSetmeals();
 
     Map<String, Object> overviewDishes();
+
+    Integer countByMap(Map map);
 }
