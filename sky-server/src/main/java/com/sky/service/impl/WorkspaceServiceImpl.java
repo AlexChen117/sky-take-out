@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -37,13 +38,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public BusinessDataVO businessData(LocalDateTime start, LocalDateTime end) {
         Map<String, Object> map = workspaceMapper.businessData(start, end);
-
+        //订单完成率
+        BigDecimal round = (BigDecimal) map.get("round");
+        //营业额
+        BigDecimal amount = (BigDecimal) map.get("amount");
+        //平均客单价
+        BigDecimal avg = (BigDecimal) map.get("avg");
+        //有效订单
+        Long complete = (Long) map.get("complete");
+        //新增用户
+        Long newUser = (Long) map.get("new_user");
         BusinessDataVO businessDataVO = new BusinessDataVO();
-        businessDataVO.setTurnover(0.0D);
-        businessDataVO.setValidOrderCount(0);
-        businessDataVO.setOrderCompletionRate(0.0D);
-        businessDataVO.setUnitPrice(0.0D);
-        businessDataVO.setNewUsers(0);
+        businessDataVO.setTurnover(amount.doubleValue());
+        businessDataVO.setValidOrderCount(Math.toIntExact(complete));
+        businessDataVO.setOrderCompletionRate(round.doubleValue());
+        businessDataVO.setUnitPrice(avg.doubleValue());
+        businessDataVO.setNewUsers(Math.toIntExact(newUser));
         return businessDataVO;
     }
 

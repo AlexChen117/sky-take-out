@@ -3,8 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.WorkspaceMapper">
     <select id="businessData" resultType="java.util.Map">
-        select sum(orders.amount) turnover, count(status = 5) valid_order_count
-        from orders
+        select ifnull(ROUND(temp.complete / temp.paid, 2), 0)  as round,
+               temp.amount                                     as amount,
+               temp.avg                                        as avg,
+               temp.complete                                   as complete,
+               (select count(*)
+                from user
+                where create_time between #{start} and #{end}) as new_user
+        from (select ifnull(sum(if(status = 5, amount, null)), 0) amount,
+                     ifnull((ifnull(sum(if(status = 5, amount, null)), 0) / count(if(status = 5, status, null))),
+                            0)                                    avg,
+                     count(if(pay_status = 1, pay_status, null))  paid,
+                     count(if(status = 5, status, null))          complete
+              from orders
+              where order_time between #{start} and #{end}) as temp
     </select>
     <select id="overviewSetmeals" resultType="java.util.Map">
         select sold.sold, discontinued.discontinued
