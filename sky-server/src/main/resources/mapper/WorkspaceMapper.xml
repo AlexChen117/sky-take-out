@@ -2,10 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.WorkspaceMapper">
-
     <select id="businessData" resultType="java.util.Map">
         select sum(orders.amount) turnover, count(status = 5) valid_order_count
         from orders
-        where order_time between #{start} and #{end}
+    </select>
+    <select id="overviewSetmeals" resultType="java.util.Map">
+        select sold.sold, discontinued.discontinued
+        from (select count(*) sold from setmeal where status = 1) sold,
+             (select count(*) discontinued from setmeal where status = 0) discontinued;
+    </select>
+    <select id="overviewDishes" resultType="java.util.Map">
+        select sold.sold, discontinued.discontinued
+        from (select count(*) sold from dish where status = 1) sold,
+             (select count(*) discontinued from dish where status = 0) discontinued;
     </select>
 </mapper>

@@ -263,6 +263,10 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return salesTop10ReportVO;
     }
 
+    /**
+     * 营业报表下载
+     * @param httpServletResponse
+     */
     @Override
     public void export(HttpServletResponse httpServletResponse) {
         try {

@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Alex
@@ -15,5 +14,9 @@ import java.util.Objects;
 
 @Mapper
 public interface WorkspaceMapper {
-    Map<String, Objects> businessData(LocalDateTime start, LocalDateTime end);
+    Map<String, Object> businessData(LocalDateTime start, LocalDateTime end);
+
+    Map<String, Object> overviewSetmeals();
+
+    Map<String, Object> overviewDishes();
 }
