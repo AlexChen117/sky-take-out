@@ -178,6 +178,8 @@ public class OrderServiceImpl implements OrderService {
     public void cancel(Integer id) {
         Orders orders = orderMapper.findOrderById(id);
         orders.setStatus(Orders.CANCELLED);
+        orders.setCancelReason("用户主动取消");
+        orders.setCancelTime(LocalDateTime.now());
         orderMapper.updateById(orders);
     }
 
@@ -217,6 +219,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 催单
+     *
      * @param id
      */
     @Override
